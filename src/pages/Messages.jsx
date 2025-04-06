@@ -331,9 +331,9 @@ const Messages = () => {
               }}
             >
               <img
-                src="/placeholder.svg?height=100&width=100"
+                src="https://thanhnien.mediacdn.vn/Uploaded/phongdt/2022_10_23/cs-go-6318.jpg"
                 alt="Select a conversation"
-                style={{ marginBottom: "20px", opacity: 0.5 }}
+                style={{ marginBottom: "20px", opacity: 0.5, width: "90%", height: "90%" }}
               />
               <Title level={4}>Select a conversation</Title>
               <Paragraph type="secondary" style={{ textAlign: "center" }}>
