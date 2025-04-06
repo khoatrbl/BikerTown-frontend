@@ -65,9 +65,11 @@ const AppLayout = () => {
             toggleSidebar={toggleSidebar}
             collapsed={collapsed}
           />
-          <Content style={{ margin: "24px 16px", padding: 24, background: "rgb(241, 239, 236)", minHeight: 280, borderRadius: 20  }}>
-            <Outlet />
-          </Content>
+            <Layout style={{ minHeight: "80vh"}}>
+            <Content style={{ margin: "24px 16px", padding: 24, background: "rgb(241, 239, 236)", minHeight: 280, borderRadius: 20  }}>
+              <Outlet />
+            </Content>
+            </Layout>
           <Footer />
         </Layout>
       </Layout>

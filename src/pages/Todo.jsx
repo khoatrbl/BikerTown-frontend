@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Typography, Card, Button, Input, List, Checkbox, Row, Col, Space, Modal, Form } from "antd"
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons"
-import { FORMAT_RGB } from "antd/es/color-picker/interface"
 
 const { Title, Paragraph } = Typography
 const { TextArea } = Input

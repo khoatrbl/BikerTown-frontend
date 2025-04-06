@@ -10,6 +10,7 @@ import {
   EnvironmentOutlined,
   CheckSquareOutlined,
   VideoCameraOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/img/helmetlogo.jpg";
@@ -116,19 +117,48 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
       />
       {isLoggedIn && (
         <div
-          style={{
-            padding: "16px",
-            textAlign: "center",
-            color: "#f5222d",
-            display: collapsed ? "none" : "block",
-            position: "absolute",
-            bottom: "20px",
-            width: "100%",
-          }}
-        >
-          <p>Next: Sunday 10:00 AM</p>
-          <p>Ngã Tư Hàng Xanh</p>
-        </div>
+    style={{
+      padding: '16px',
+      textAlign: 'center',
+      color: '#f5222d',
+      display: collapsed ? 'none' : 'block',
+      position: 'absolute',
+      bottom: '20px',
+      width: '100%',
+      background: '#fff',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      borderRadius: '8px',
+      overflow: 'hidden',
+      animation: 'fadeInUp 0.5s ease',
+    }}
+  >
+    <style>
+      {`
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .shake {
+        display: inline-block;
+        animation: shake 1s infinite;
+        color: #faad14;
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      `}
+    </style>
+
+    <div className="shake">
+      <BellOutlined />
+    </div>
+    <p style={{ margin: 0, fontWeight: 'bold' }}>Next: Sunday 10:00 AM</p>
+    <p style={{ margin: 0 }}>Ngã Tư Hàng Xanh</p>
+  </div>
       )}
     </Sider>
   );

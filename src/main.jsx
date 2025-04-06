@@ -7,10 +7,10 @@ import ErrorBoundary from './ErrorBoundary';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ErrorBoundary>
+    <ConfigProvider>
       <AntdApp>
         <App />
       </AntdApp>
-    </ErrorBoundary>
+    </ConfigProvider>
   </React.StrictMode>
 );
