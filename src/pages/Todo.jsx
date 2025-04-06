@@ -273,7 +273,6 @@ const Todo = () => {
                   danger
                   icon={<DeleteOutlined />}
                   onClick={() => deleteTrip(activeTrip)}
-                  disabled={trips.length <= 1}
                 >
                   Delete Trip
                 </Button>

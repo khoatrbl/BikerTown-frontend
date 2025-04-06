@@ -16,11 +16,13 @@ import {
   CalendarOutlined,
 } from "@ant-design/icons";
 import "./Home.css";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
 
 const Home = () => {
+  const navigate = useNavigate();
   // Featured destinations
   const destinations = [
     {
@@ -114,10 +116,14 @@ const Home = () => {
                 adventures
               </Paragraph>
               <Space>
-                <Button type="primary" size="large">
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={() => navigate("/todo")}
+                >
                   Join Now
                 </Button>
-                <Button size="large">Learn More</Button>
+                <Button size="large" onClick={() => navigate("/todo")}>Learn More</Button>
               </Space>
             </div>
           </div>
@@ -158,7 +164,7 @@ const Home = () => {
                 Create detailed trip plans and share them with your riding
                 buddies
               </Paragraph>
-              <Button type="primary" size="large">
+              <Button type="primary" size="large" onClick={() => navigate("/todo")}>
                 Start Planning
               </Button>
             </div>
@@ -201,7 +207,7 @@ const Home = () => {
                 Your journeys start here, your stories start here
               </Paragraph>
               <Space>
-                <Button type="primary" size="large">
+                <Button type="primary" size="large" onClick={() => navigate("/todo")}>
                   Join Us
                 </Button>
               </Space>
@@ -228,7 +234,7 @@ const Home = () => {
                   />
                 }
                 actions={[
-                  <Button type="link" key="explore">
+                  <Button type="link" key="explore" onClick={() => navigate("/todo")}>
                     Explore <RightOutlined />
                   </Button>,
                 ]}
@@ -252,14 +258,14 @@ const Home = () => {
       <Divider />
 
       {/* Upcoming Events */}
-      <div style={{ padding: "60px 0", backgroundColor: "lightgrey"}}>
+      <div style={{ padding: "60px 0", backgroundColor: "lightgrey" }}>
         <Title level={2} style={{ textAlign: "center", marginBottom: 40 }}>
           Upcoming Rides & Meetups
         </Title>
         <Row gutter={[24, 24]}>
           {events.map((event, index) => (
             <Col xs={24} sm={8} key={index}>
-              <Card style={{margin: "20px"}}hoverable>
+              <Card style={{ margin: "20px" }} hoverable>
                 <Space
                   direction="vertical"
                   size="middle"
@@ -295,12 +301,15 @@ const Home = () => {
           margin: "40px -24px -24px -24px",
           backgroundImage:
             "url('https://www.asiakingtravel.com/images/thumbs/2024/02/8519/saigon-night-banner_1900x700xcrop.webp')",
-          backgroundSize: "cover", 
-          backgroundPosition: "center", 
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        <Title level={2} style={{ textAlign: "center", marginBottom: 40, color : "yellow" }}>
+        <Title
+          level={2}
+          style={{ textAlign: "center", marginBottom: 40, color: "yellow" }}
+        >
           What Our Riders Say
         </Title>
         <Row gutter={[24, 24]} justify="center">
