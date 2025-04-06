@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Layout, ConfigProvider, theme } from "antd"
 import { Outlet, useNavigate, useLocation } from "react-router-dom"

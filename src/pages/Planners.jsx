@@ -45,6 +45,7 @@ const Planners = () => {
 
     form.resetFields()
     setCheckpoints([])
+    setIsModalVisible(false)
   }
 
   const editPlan = (plan) => {
@@ -157,10 +158,23 @@ const Planners = () => {
 
           <Divider>Checkpoints</Divider>
 
-          <Form.Item name="checkpoint" label="Add Checkpoint">
+          <Form.Item label="Add Checkpoint">
             <Input.Group compact>
-              <Input style={{ width: "calc(100% - 40px)" }} placeholder="e.g., Bò sữa 22" />
-              <Button type="primary" icon={<PlusOutlined />} onClick={addCheckpoint} />
+              {/* Nested Form.Item binds the input to the form field "checkpoint" */}
+              <Form.Item
+                name="checkpoint"
+                noStyle
+                rules={[{ required: false, message: "Nhập checkpoint" }]}
+              >
+               <Input
+                style={{ width: "calc(100% - 40px)" }}
+                 placeholder="e.g., Bò sữa 22"
+               />
+              </Form.Item>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={addCheckpoint} />
             </Input.Group>
           </Form.Item>
 
