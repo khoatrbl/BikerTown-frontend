@@ -1,12 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Typography, Card, Button, Input, List, Checkbox, Row, Col, Space, Modal, Form, Tabs } from "antd"
-import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons"
+import { useState } from "react";
+import {
+  Typography,
+  Card,
+  Button,
+  Input,
+  List,
+  Checkbox,
+  Row,
+  Col,
+  Space,
+  Modal,
+  Form,
+  Tabs,
+} from "antd";
+import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-const { Title, Paragraph } = Typography
-const { TextArea } = Input
-const { TabPane } = Tabs
+const { Title, Paragraph } = Typography;
+const { TextArea } = Input;
+const { TabPane } = Tabs;
 
 const Todo = () => {
   const [trips, setTrips] = useState([
@@ -48,86 +61,90 @@ const Todo = () => {
         },
       ],
     },
-  ])
+  ]);
 
-  const [activeTrip, setActiveTrip] = useState(trips[0]?.id || null)
-  const [isLocationModalVisible, setIsLocationModalVisible] = useState(false)
-  const [isTripModalVisible, setIsTripModalVisible] = useState(false)
-  const [editingTodoList, setEditingTodoList] = useState(null)
-  const [editingTrip, setEditingTrip] = useState(null)
-  const [locationForm] = Form.useForm()
-  const [tripForm] = Form.useForm()
-  const [newItemText, setNewItemText] = useState("")
+  const [activeTrip, setActiveTrip] = useState(trips[0]?.id || null);
+  const [isLocationModalVisible, setIsLocationModalVisible] = useState(false);
+  const [isTripModalVisible, setIsTripModalVisible] = useState(false);
+  const [editingTodoList, setEditingTodoList] = useState(null);
+  const [editingTrip, setEditingTrip] = useState(null);
+  const [locationForm] = Form.useForm();
+  const [tripForm] = Form.useForm();
+  const [newItemTexts, setNewItemTexts] = useState({})
 
   // Get the current active trip
-  const currentTrip = trips.find((trip) => trip.id === activeTrip) || trips[0]
-  const todoLists = currentTrip?.todoLists || []
+  const currentTrip = trips.find((trip) => trip.id === activeTrip) || trips[0];
+  const todoLists = currentTrip?.todoLists || [];
 
   // Trip Modal Functions
   const showTripModal = (trip = null) => {
-    setEditingTrip(trip)
+    setEditingTrip(trip);
     if (trip) {
       tripForm.setFieldsValue({
         name: trip.name,
-      })
+      });
     } else {
-      tripForm.resetFields()
+      tripForm.resetFields();
     }
-    setIsTripModalVisible(true)
-  }
+    setIsTripModalVisible(true);
+  };
 
   const handleTripCancel = () => {
-    setIsTripModalVisible(false)
-    setEditingTrip(null)
-    tripForm.resetFields()
-  }
+    setIsTripModalVisible(false);
+    setEditingTrip(null);
+    tripForm.resetFields();
+  };
 
   const handleTripSubmit = (values) => {
     if (editingTrip) {
       // Update existing trip
-      setTrips(trips.map((trip) => (trip.id === editingTrip.id ? { ...trip, name: values.name } : trip)))
+      setTrips(
+        trips.map((trip) =>
+          trip.id === editingTrip.id ? { ...trip, name: values.name } : trip
+        )
+      );
     } else {
       // Create new trip
       const newTrip = {
         id: Date.now(),
         name: values.name,
         todoLists: [],
-      }
-      setTrips([...trips, newTrip])
-      setActiveTrip(newTrip.id)
+      };
+      setTrips([...trips, newTrip]);
+      setActiveTrip(newTrip.id);
     }
-    setIsTripModalVisible(false)
-    tripForm.resetFields()
-  }
+    setIsTripModalVisible(false);
+    tripForm.resetFields();
+  };
 
   const deleteTrip = (tripId) => {
-    setTrips(trips.filter((trip) => trip.id !== tripId))
+    setTrips(trips.filter((trip) => trip.id !== tripId));
     if (activeTrip === tripId) {
-      setActiveTrip(trips[0]?.id || null)
+      setActiveTrip(trips[0]?.id || null);
     }
-  }
+  };
 
   // Location Modal Functions
   const showLocationModal = (todoList = null) => {
-    setEditingTodoList(todoList)
+    setEditingTodoList(todoList);
     if (todoList) {
       locationForm.setFieldsValue({
         location: todoList.location,
-      })
+      });
     } else {
-      locationForm.resetFields()
+      locationForm.resetFields();
     }
-    setIsLocationModalVisible(true)
-  }
+    setIsLocationModalVisible(true);
+  };
 
   const handleLocationCancel = () => {
-    setIsLocationModalVisible(false)
-    setEditingTodoList(null)
-    locationForm.resetFields()
-  }
+    setIsLocationModalVisible(false);
+    setEditingTodoList(null);
+    locationForm.resetFields();
+  };
 
   const handleLocationSubmit = (values) => {
-    if (!currentTrip) return
+    if (!currentTrip) return;
 
     if (editingTodoList) {
       // Update existing todo list
@@ -137,41 +154,50 @@ const Todo = () => {
             ? {
                 ...trip,
                 todoLists: trip.todoLists.map((list) =>
-                  list.id === editingTodoList.id ? { ...list, location: values.location } : list,
+                  list.id === editingTodoList.id
+                    ? { ...list, location: values.location }
+                    : list
                 ),
               }
-            : trip,
-        ),
-      )
+            : trip
+        )
+      );
     } else {
       // Create new todo list
       const newTodoList = {
         id: Date.now(),
         location: values.location,
         items: [],
-      }
+      };
       setTrips(
         trips.map((trip) =>
-          trip.id === currentTrip.id ? { ...trip, todoLists: [...trip.todoLists, newTodoList] } : trip,
-        ),
-      )
+          trip.id === currentTrip.id
+            ? { ...trip, todoLists: [...trip.todoLists, newTodoList] }
+            : trip
+        )
+      );
     }
-    setIsLocationModalVisible(false)
-    locationForm.resetFields()
-  }
+    setIsLocationModalVisible(false);
+    locationForm.resetFields();
+  };
 
   const deleteTodoList = (listId) => {
-    if (!currentTrip) return
+    if (!currentTrip) return;
 
     setTrips(
       trips.map((trip) =>
-        trip.id === currentTrip.id ? { ...trip, todoLists: trip.todoLists.filter((list) => list.id !== listId) } : trip,
-      ),
-    )
-  }
+        trip.id === currentTrip.id
+          ? {
+              ...trip,
+              todoLists: trip.todoLists.filter((list) => list.id !== listId),
+            }
+          : trip
+      )
+    );
+  };
 
   const toggleItemCompletion = (listId, itemId) => {
-    if (!currentTrip) return
+    if (!currentTrip) return;
 
     setTrips(
       trips.map((trip) =>
@@ -183,43 +209,45 @@ const Todo = () => {
                   ? {
                       ...list,
                       items: list.items.map((item) =>
-                        item.id === itemId ? { ...item, completed: !item.completed } : item,
+                        item.id === itemId
+                          ? { ...item, completed: !item.completed }
+                          : item
                       ),
                     }
-                  : list,
+                  : list
               ),
             }
-          : trip,
-      ),
-    )
-  }
+          : trip
+      )
+    );
+  };
 
   const addItemToList = (listId) => {
-    if (!newItemText.trim() || !currentTrip) return
-
+    const text = newItemTexts[listId]?.trim()
+    if (!text || !currentTrip) return
+  
+    const newItem = { id: Date.now(), text, completed: false }
+  
     setTrips(
       trips.map((trip) =>
         trip.id === currentTrip.id
           ? {
               ...trip,
               todoLists: trip.todoLists.map((list) =>
-                list.id === listId
-                  ? {
-                      ...list,
-                      items: [...list.items, { id: Date.now(), text: newItemText, completed: false }],
-                    }
-                  : list,
+                list.id === listId ? { ...list, items: [...list.items, newItem] } : list,
               ),
             }
           : trip,
       ),
     )
-
-    setNewItemText("")
+  
+    // Clear the input for that list
+    setNewItemTexts({ ...newItemTexts, [listId]: "" })
   }
+  
 
   const deleteItem = (listId, itemId) => {
-    if (!currentTrip) return
+    if (!currentTrip) return;
 
     setTrips(
       trips.map((trip) =>
@@ -232,21 +260,28 @@ const Todo = () => {
                       ...list,
                       items: list.items.filter((item) => item.id !== itemId),
                     }
-                  : list,
+                  : list
               ),
             }
-          : trip,
-      ),
-    )
-  }
+          : trip
+      )
+    );
+  };
 
   const handleTabChange = (key) => {
-    setActiveTrip(Number.parseInt(key))
-  }
+    setActiveTrip(Number.parseInt(key));
+  };
 
   return (
     <div style={{ backgroundColor: "rgb(241, 239, 236)", padding: "20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
         <Title level={2}>Trip Planner</Title>
         <Button
           type="primary"
@@ -266,7 +301,10 @@ const Todo = () => {
           tabBarExtraContent={{
             right: activeTrip && (
               <Space>
-                <Button icon={<EditOutlined />} onClick={() => showTripModal(currentTrip)}>
+                <Button
+                  icon={<EditOutlined />}
+                  onClick={() => showTripModal(currentTrip)}
+                >
                   Edit Trip
                 </Button>
                 <Button
@@ -284,22 +322,30 @@ const Todo = () => {
             <TabPane tab={trip.name} key={trip.id.toString()}>
               <div style={{ marginBottom: 24 }}>
                 <div
-                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 24,
+                  }}
                 >
                   <Title level={3}>To Do Lists</Title>
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={() => showLocationModal()}
-                    style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
+                    style={{
+                      backgroundColor: "#ff4d4f",
+                      borderColor: "#ff4d4f",
+                    }}
                   >
                     Add Location
                   </Button>
                 </div>
 
                 <Paragraph style={{ marginBottom: 24 }}>
-                  Create to-do lists for each location on your trip to stay organized and make sure you don't miss
-                  anything important.
+                  Create to-do lists for each location on your trip to stay
+                  organized and make sure you don't miss anything important.
                 </Paragraph>
 
                 <Row gutter={[24, 24]}>
@@ -309,7 +355,11 @@ const Todo = () => {
                         title={todoList.location}
                         extra={
                           <Space>
-                            <Button type="text" icon={<EditOutlined />} onClick={() => showLocationModal(todoList)} />
+                            <Button
+                              type="text"
+                              icon={<EditOutlined />}
+                              onClick={() => showLocationModal(todoList)}
+                            />
                             <Button
                               type="text"
                               danger
@@ -318,7 +368,11 @@ const Todo = () => {
                             />
                           </Space>
                         }
-                        style={{ height: "100%", borderRadius: "25px", padding: "0.7rem" }}
+                        style={{
+                          height: "100%",
+                          borderRadius: "25px",
+                          padding: "0.7rem",
+                        }}
                       >
                         <List
                           size="small"
@@ -332,14 +386,22 @@ const Todo = () => {
                                   type="text"
                                   danger
                                   icon={<DeleteOutlined />}
-                                  onClick={() => deleteItem(todoList.id, item.id)}
+                                  onClick={() =>
+                                    deleteItem(todoList.id, item.id)
+                                  }
                                 />,
                               ]}
                             >
                               <Checkbox
                                 checked={item.completed}
-                                onChange={() => toggleItemCompletion(todoList.id, item.id)}
-                                style={{ textDecoration: item.completed ? "line-through" : "none" }}
+                                onChange={() =>
+                                  toggleItemCompletion(todoList.id, item.id)
+                                }
+                                style={{
+                                  textDecoration: item.completed
+                                    ? "line-through"
+                                    : "none",
+                                }}
                               >
                                 {item.text}
                               </Checkbox>
@@ -349,8 +411,13 @@ const Todo = () => {
                             <div style={{ display: "flex" }}>
                               <Input
                                 placeholder="Add new item"
-                                value={newItemText}
-                                onChange={(e) => setNewItemText(e.target.value)}
+                                value={newItemTexts[todoList.id] || ""}
+                                onChange={(e) =>
+                                  setNewItemTexts({
+                                    ...newItemTexts,
+                                    [todoList.id]: e.target.value,
+                                  })
+                                }
                                 onPressEnter={() => addItemToList(todoList.id)}
                                 style={{ marginRight: 8 }}
                               />
@@ -358,7 +425,10 @@ const Todo = () => {
                                 type="primary"
                                 icon={<PlusOutlined />}
                                 onClick={() => addItemToList(todoList.id)}
-                                style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
+                                style={{
+                                  backgroundColor: "#ff4d4f",
+                                  borderColor: "#ff4d4f",
+                                }}
                               />
                             </div>
                           }
@@ -379,7 +449,11 @@ const Todo = () => {
             icon={<PlusOutlined />}
             onClick={() => showTripModal()}
             size="large"
-            style={{ marginTop: 16, backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
+            style={{
+              marginTop: 16,
+              backgroundColor: "#ff4d4f",
+              borderColor: "#ff4d4f",
+            }}
           >
             Create To Do list
           </Button>
@@ -394,14 +468,22 @@ const Todo = () => {
         footer={null}
       >
         <Form form={tripForm} layout="vertical" onFinish={handleTripSubmit}>
-          <Form.Item name="name" label="Trip Name" rules={[{ required: true, message: "Please enter a trip name" }]}>
+          <Form.Item
+            name="name"
+            label="Trip Name"
+            rules={[{ required: true, message: "Please enter a trip name" }]}
+          >
             <Input placeholder="e.g., Trip to Vũng Tàu" />
           </Form.Item>
 
           <Form.Item>
             <Space style={{ width: "100%", justifyContent: "flex-end" }}>
               <Button onClick={handleTripCancel}>Cancel</Button>
-              <Button type="primary" htmlType="submit" style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
+              >
                 {editingTrip ? "Update" : "Create"}
               </Button>
             </Space>
@@ -416,11 +498,17 @@ const Todo = () => {
         onCancel={handleLocationCancel}
         footer={null}
       >
-        <Form form={locationForm} layout="vertical" onFinish={handleLocationSubmit}>
+        <Form
+          form={locationForm}
+          layout="vertical"
+          onFinish={handleLocationSubmit}
+        >
           <Form.Item
             name="location"
             label="Location Name"
-            rules={[{ required: true, message: "Please enter a location name" }]}
+            rules={[
+              { required: true, message: "Please enter a location name" },
+            ]}
           >
             <Input placeholder="e.g., Vũng Tàu" />
           </Form.Item>
@@ -428,7 +516,11 @@ const Todo = () => {
           <Form.Item>
             <Space style={{ width: "100%", justifyContent: "flex-end" }}>
               <Button onClick={handleLocationCancel}>Cancel</Button>
-              <Button type="primary" htmlType="submit" style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
+              >
                 {editingTodoList ? "Update" : "Add"}
               </Button>
             </Space>
@@ -436,8 +528,7 @@ const Todo = () => {
         </Form>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default Todo
-
+export default Todo;
