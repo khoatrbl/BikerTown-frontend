@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Layout, ConfigProvider, theme } from "antd";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/Header/Header";
-import Footer from "../components/Footer";
+import Footer from "../components/Footer/Footer";
 import Sidebar from "../components/Sidebar";
 import "./Layout.css";
 

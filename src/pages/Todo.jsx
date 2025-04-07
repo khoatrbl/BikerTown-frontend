@@ -280,6 +280,9 @@ const Todo = () => {
           justifyContent: "space-between",
           alignItems: "center",
           marginBottom: 16,
+          borderColor: "black",
+          borderBottom: "1px dashed brown", 
+          paddingBottom: 8 
         }}
       >
         <Title level={2}>Trip Planner</Title>
@@ -294,7 +297,7 @@ const Todo = () => {
       </div>
 
       {trips.length > 0 ? (
-        <Tabs
+        <Tabs        
           activeKey={activeTrip?.toString()}
           onChange={handleTabChange}
           type="card"
@@ -320,7 +323,7 @@ const Todo = () => {
         >
           {trips.map((trip) => (
             <TabPane tab={trip.name} key={trip.id.toString()}>
-              <div style={{ marginBottom: 24 }}>
+              <div style={{ marginBottom: 24}}>
                 <div
                   style={{
                     display: "flex",
@@ -329,7 +332,7 @@ const Todo = () => {
                     marginBottom: 24,
                   }}
                 >
-                  <Title level={3}>To Do Lists</Title>
+                  <Title level={4} style= {{color:"brown"}}>To Do Lists</Title>
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}
