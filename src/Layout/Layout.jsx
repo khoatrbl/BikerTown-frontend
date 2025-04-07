@@ -1,47 +1,54 @@
-import { useState, useEffect } from "react"
-import { Layout, ConfigProvider, theme } from "antd"
-import { Outlet, useNavigate, useLocation } from "react-router-dom"
-import Header from "../components/Header"
-import Footer from "../components/Footer"
-import Sidebar from "../components/Sidebar"
+import { useState, useEffect } from "react";
+import { Layout, ConfigProvider, theme } from "antd";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer";
+import Sidebar from "../components/Sidebar";
+import "./Layout.css";
 
-const { Content } = Layout
+const { Content } = Layout;
 
 const AppLayout = () => {
-  const [collapsed, setCollapsed] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const navigate = useNavigate()
-  const location = useLocation()
+  const [collapsed, setCollapsed] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check if user is logged in
-    const user = localStorage.getItem("user")
+    const user = localStorage.getItem("user");
     if (user) {
-      setIsLoggedIn(true)
+      setIsLoggedIn(true);
     } else {
       // Redirect to home if trying to access protected routes
-      const protectedRoutes = ["/planners", "/todo", "/history", "/friends", "/messages"]
+      const protectedRoutes = [
+        "/planners",
+        "/todo",
+        "/history",
+        "/friends",
+        "/messages",
+      ];
       if (protectedRoutes.includes(location.pathname)) {
-        navigate("/")
+        navigate("/");
       }
     }
-  }, [location.pathname, navigate])
+  }, [location.pathname, navigate]);
 
   const toggleSidebar = () => {
-    setCollapsed(!collapsed)
-  }
+    setCollapsed(!collapsed);
+  };
 
   const handleLogin = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData))
-    setIsLoggedIn(true)
-    navigate("/")
-  }
+    localStorage.setItem("user", JSON.stringify(userData));
+    setIsLoggedIn(true);
+    navigate("/");
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
-    setIsLoggedIn(false)
-    navigate("/")
-  }
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
 
   return (
     <ConfigProvider
@@ -53,7 +60,7 @@ const AppLayout = () => {
         },
       }}
     >
-      <Layout style={{ minHeight: "100vh" }}>
+      <Layout className="full-height-layout">
         <Sidebar collapsed={collapsed} isLoggedIn={isLoggedIn} />
         <Layout>
           <Header
@@ -63,17 +70,16 @@ const AppLayout = () => {
             toggleSidebar={toggleSidebar}
             collapsed={collapsed}
           />
-            <Layout style={{ minHeight: "80vh"}}>
-            <Content style={{ margin: "24px 16px", padding: 24, background: "rgb(241, 239, 236)", minHeight: 280, borderRadius: 20  }}>
+          <Layout className="inner-layout">
+            <Content className="content-style">
               <Outlet />
             </Content>
-            </Layout>
+          </Layout>
           <Footer />
         </Layout>
       </Layout>
     </ConfigProvider>
-  )
-}
+  );
+};
 
-export default AppLayout
-
+export default AppLayout;

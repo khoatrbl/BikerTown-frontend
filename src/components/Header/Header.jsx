@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Layout,
   Button,
@@ -9,7 +9,7 @@ import {
   Space,
   Avatar,
   message,
-} from "antd"
+} from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -17,46 +17,47 @@ import {
   LogoutOutlined,
   LoginOutlined,
   UserAddOutlined,
-  ProfileOutlined
-} from "@ant-design/icons"
-import { Link } from "react-router-dom"
+  ProfileOutlined,
+} from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import "./Header.css";
 
-const { Header: AntHeader } = Layout
+const { Header: AntHeader } = Layout;
 
 const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => {
-  const [loginModalVisible, setLoginModalVisible] = useState(false)
-  const [registerModalVisible, setRegisterModalVisible] = useState(false)
-  const [form] = Form.useForm()
-  const [registerForm] = Form.useForm()
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [registerModalVisible, setRegisterModalVisible] = useState(false);
+  const [form] = Form.useForm();
+  const [registerForm] = Form.useForm();
 
-  const showLoginModal = () => setLoginModalVisible(true)
-  const showRegisterModal = () => setRegisterModalVisible(true)
+  const showLoginModal = () => setLoginModalVisible(true);
+  const showRegisterModal = () => setRegisterModalVisible(true);
   const handleLoginCancel = () => {
-    setLoginModalVisible(false)
-    form.resetFields()
-  }
+    setLoginModalVisible(false);
+    form.resetFields();
+  };
   const handleRegisterCancel = () => {
-    setRegisterModalVisible(false)
-    registerForm.resetFields()
-  }
+    setRegisterModalVisible(false);
+    registerForm.resetFields();
+  };
 
   const handleLoginSubmit = (values) => {
     if (values.email === "user@gmail.com" && values.password === "123") {
-      message.success("Login successful!")
-      onLogin({ email: values.email, name: "Rider User" })
-      setLoginModalVisible(false)
-      form.resetFields()
+      message.success("Login successful!");
+      onLogin({ email: values.email, name: "Rider User" });
+      setLoginModalVisible(false);
+      form.resetFields();
     } else {
-      message.error("Invalid credentials. Try user@gmail.com/123")
+      message.error("Invalid credentials. Try user@gmail.com/123");
     }
-  }
+  };
 
   const handleRegisterSubmit = (values) => {
-    message.success("Registration successful! Please login.")
-    setRegisterModalVisible(false)
-    setLoginModalVisible(true)
-    registerForm.resetFields()
-  }
+    message.success("Registration successful! Please login.");
+    setRegisterModalVisible(false);
+    setLoginModalVisible(true);
+    registerForm.resetFields();
+  };
 
   const userMenuItems = [
     {
@@ -69,49 +70,26 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
       label: <a onClick={onLogout}>Logout</a>,
       icon: <LogoutOutlined />,
     },
-  ]
+  ];
 
   return (
-    <AntHeader
-      style={{
-        padding: "0 16px",
-        background: "",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-        color: "white",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center" }}>
+    <AntHeader className="custom-header">
+      <div className="header-left">
         <Button
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={toggleSidebar}
-          style={{ fontSize: "16px", width: 64, height: 64, color: "white" }}
+          className="toggle-button"
         />
-        <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-          {/* <img
-            src={logo}
-            alt="Motorbike Riders Logo"
-            style={{
-              marginRight: 10,
-              height: 40,
-              width: 40,
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          /> */}
-          <h1 style={{ margin: 0, fontSize: "1.2rem", color: "white" }}>
-            BikerTown 
-          </h1>
+        <Link to="/" className="brand-link">
+          <h1 className="brand-title">BikerTown</h1>
         </Link>
       </div>
 
       <div>
         {isLoggedIn ? (
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-            <Space style={{ cursor: "pointer" }}>
+            <Space className="avatar-dropdown">
               <Avatar style={{ backgroundColor: "#f5222d" }} icon={<UserOutlined />} />
               <span>Rider User</span>
             </Space>
@@ -129,25 +107,12 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
       </div>
 
       {/* Login Modal */}
-      <Modal
-        title="Login"
-        open={loginModalVisible}
-        onCancel={handleLoginCancel}
-        footer={null}
-      >
+      <Modal title="Login" open={loginModalVisible} onCancel={handleLoginCancel} footer={null}>
         <Form form={form} layout="vertical" onFinish={handleLoginSubmit}>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: "Please input your email!" }]}
-          >
+          <Form.Item name="email" label="Email" rules={[{ required: true, message: "Please input your email!" }]}>
             <Input placeholder="user@gmail.com" />
           </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
+          <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please input your password!" }]}>
             <Input.Password placeholder="123" />
           </Form.Item>
           <Form.Item>
@@ -155,12 +120,12 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
               Login
             </Button>
           </Form.Item>
-          <div style={{ textAlign: "center" }}>
+          <div className="modal-footer">
             Don't have an account?{" "}
             <a
               onClick={() => {
-                handleLoginCancel()
-                showRegisterModal()
+                handleLoginCancel();
+                showRegisterModal();
               }}
             >
               Register now
@@ -170,18 +135,9 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
       </Modal>
 
       {/* Register Modal */}
-      <Modal
-        title="Register"
-        open={registerModalVisible}
-        onCancel={handleRegisterCancel}
-        footer={null}
-      >
+      <Modal title="Register" open={registerModalVisible} onCancel={handleRegisterCancel} footer={null}>
         <Form form={registerForm} layout="vertical" onFinish={handleRegisterSubmit}>
-          <Form.Item
-            name="name"
-            label="Full Name"
-            rules={[{ required: true, message: "Please input your name!" }]}
-          >
+          <Form.Item name="name" label="Full Name" rules={[{ required: true, message: "Please input your name!" }]}>
             <Input />
           </Form.Item>
           <Form.Item
@@ -194,11 +150,7 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
+          <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please input your password!" }]}>
             <Input.Password />
           </Form.Item>
           <Form.Item
@@ -210,11 +162,9 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve()
+                    return Promise.resolve();
                   }
-                  return Promise.reject(
-                    new Error("The two passwords do not match!")
-                  )
+                  return Promise.reject(new Error("The two passwords do not match!"));
                 },
               }),
             ]}
@@ -226,12 +176,12 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
               Register
             </Button>
           </Form.Item>
-          <div style={{ textAlign: "center" }}>
+          <div className="modal-footer">
             Already have an account?{" "}
             <a
               onClick={() => {
-                handleRegisterCancel()
-                showLoginModal()
+                handleRegisterCancel();
+                showLoginModal();
               }}
             >
               Login
@@ -240,7 +190,7 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
         </Form>
       </Modal>
     </AntHeader>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
