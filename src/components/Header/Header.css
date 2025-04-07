@@ -42,6 +42,10 @@
     font-size: 1.2rem;
     color: white;
   }
+
+  .brand-title:hover {
+    color: red;
+  }
   
   /* Style for the avatar dropdown container */
   .avatar-dropdown {

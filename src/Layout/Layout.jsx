@@ -3,7 +3,7 @@ import { Layout, ConfigProvider, theme } from "antd";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/Sidebar/Sidebar";
 import "./Layout.css";
 
 const { Content } = Layout;
