@@ -125,7 +125,7 @@ const History = () => {
                       <Title level={5} style={{ marginTop: 16 }}>
                         Participants
                       </Title>
-                      <Avatar.Group maxCount={4}>
+                      <Avatar.Group max={{ count: 4 }}>
                         {trip.participants.map((participant, index) => (
                           <Avatar key={index} style={{ backgroundColor: "#f5222d" }}>
                             {participant.charAt(0)}
