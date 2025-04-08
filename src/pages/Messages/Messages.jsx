@@ -1,8 +1,21 @@
-"use client"
-
 import { useState, useRef, useEffect } from "react"
-import { Typography, Input, Button, List, Avatar, Empty, Badge } from "antd"
-import { SendOutlined, SmileOutlined, PaperClipOutlined, SearchOutlined } from "@ant-design/icons"
+import {
+  Typography,
+  Input,
+  Button,
+  List,
+  Avatar,
+  Empty,
+  Badge
+} from "antd"
+import {
+  SendOutlined,
+  SmileOutlined,
+  PaperClipOutlined,
+  SearchOutlined
+} from "@ant-design/icons"
+
+import "./Messages.css"
 
 const { Title, Paragraph, Text } = Typography
 
@@ -12,7 +25,6 @@ const Messages = () => {
   const [searchText, setSearchText] = useState("")
   const messagesEndRef = useRef(null)
 
-  // Sample chats data
   const [chats, setChats] = useState([
     {
       id: 1,
@@ -97,53 +109,34 @@ const Messages = () => {
 
     setChats(updatedChats)
     setMessageText("")
-
-    // Update selected chat
     setSelectedChat(updatedChats.find((chat) => chat.id === selectedChat.id))
 
-    // Scroll to bottom after message is sent
     setTimeout(scrollToBottom, 100)
   }
 
   const handleChatSelect = (chat) => {
-    // Mark messages as read
-    const updatedChats = chats.map((c) => {
-      if (c.id === chat.id) {
-        return { ...c, unread: 0 }
-      }
-      return c
-    })
-
+    const updatedChats = chats.map((c) =>
+      c.id === chat.id ? { ...c, unread: 0 } : c
+    )
     setChats(updatedChats)
     setSelectedChat(chat)
   }
 
-  const filteredChats = chats.filter((chat) => chat.user.name.toLowerCase().includes(searchText.toLowerCase()))
+  const filteredChats = chats.filter((chat) =>
+    chat.user.name.toLowerCase().includes(searchText.toLowerCase())
+  )
 
   return (
-    <div>
-      <Title level={2}>Messages</Title>
-      <Paragraph style={{ marginBottom: 24 }}>Chat with your friends and plan your next ride together.</Paragraph>
+    <div className="messages-container">
+      <Title level={2} className="messages-title">Messages</Title>
+      <Paragraph className="messages-description">
+        Chat with your friends and plan your next ride together.
+      </Paragraph>
 
-      <div
-        style={{
-          display: "flex",
-          height: "calc(80vh - 200px)",
-          border: "1px solid #f0f0f0",
-          borderRadius: "8px",
-          overflow: "hidden",
-        }}
-      >
+      <div className="chat-wrapper">
         {/* Chat List */}
-        <div
-          style={{
-            width: "30%",
-            borderRight: "1px solid #f0f0f0",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div style={{ padding: "16px" }}>
+        <div className="chat-list">
+          <div className="chat-search">
             <Input
               placeholder="Search conversations..."
               prefix={<SearchOutlined />}
@@ -151,18 +144,13 @@ const Messages = () => {
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
-
-          <div style={{ flex: 1, overflow: "auto" }}>
+          <div className="chat-list-scroll">
             {filteredChats.length > 0 ? (
               <List
                 dataSource={filteredChats}
                 renderItem={(chat) => (
                   <List.Item
-                    style={{
-                      padding: "12px 16px",
-                      cursor: "pointer",
-                      backgroundColor: selectedChat?.id === chat.id ? "#f5f5f5" : "transparent",
-                    }}
+                    className={`chat-item ${selectedChat?.id === chat.id ? "chat-item-selected" : ""}`}
                     onClick={() => handleChatSelect(chat)}
                   >
                     <List.Item.Meta
@@ -177,7 +165,7 @@ const Messages = () => {
                         </Badge>
                       }
                       title={
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div className="chat-meta-name">
                           <Text strong>{chat.user.name}</Text>
                           <Text type="secondary" style={{ fontSize: "12px" }}>
                             {chat.messages[chat.messages.length - 1]?.time}
@@ -185,14 +173,16 @@ const Messages = () => {
                         </div>
                       }
                       description={
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div className="chat-meta-description">
                           <Text
                             ellipsis={{ tooltip: chat.messages[chat.messages.length - 1]?.text }}
                             style={{ maxWidth: "150px" }}
                           >
                             {chat.messages[chat.messages.length - 1]?.text}
                           </Text>
-                          {chat.unread > 0 && <Badge count={chat.unread} size="small" style={{ marginLeft: "8px" }} />}
+                          {chat.unread > 0 && (
+                            <Badge count={chat.unread} size="small" style={{ marginLeft: "8px" }} />
+                          )}
                         </div>
                       }
                     />
@@ -210,28 +200,15 @@ const Messages = () => {
         </div>
 
         {/* Chat Window */}
-        <div
-          style={{
-            width: "70%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div className="chat-window">
           {selectedChat ? (
             <>
-              {/* Chat Header */}
-              <div
-                style={{
-                  padding: "16px",
-                  borderBottom: "1px solid #f0f0f0",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
+              {/* Header */}
+              <div className="chat-header">
                 <Avatar
                   src={selectedChat.user.avatar}
+                  className="chat-header-info"
                   style={{
-                    marginRight: "12px",
                     border: selectedChat.user.status === "online" ? "2px solid #52c41a" : "none",
                   }}
                 />
@@ -247,44 +224,14 @@ const Messages = () => {
               </div>
 
               {/* Messages */}
-              <div
-                style={{
-                  flex: 1,
-                  padding: "16px",
-                  overflow: "auto",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
+              <div className="chat-messages">
                 {selectedChat.messages.map((message) => (
                   <div
                     key={message.id}
-                    style={{
-                      alignSelf: message.sender === "me" ? "flex-end" : "flex-start",
-                      maxWidth: "70%",
-                      marginBottom: "16px",
-                    }}
+                    className={`message-bubble ${message.sender === "me" ? "message-me" : "message-them"}`}
                   >
-                    <div
-                      style={{
-                        backgroundColor: message.sender === "me" ? "#f5222d" : "#f0f0f0",
-                        color: message.sender === "me" ? "white" : "inherit",
-                        padding: "12px 16px",
-                        borderRadius: "12px",
-                        borderBottomRightRadius: message.sender === "me" ? "4px" : "12px",
-                        borderBottomLeftRadius: message.sender === "me" ? "12px" : "4px",
-                      }}
-                    >
-                      {message.text}
-                    </div>
-                    <div
-                      style={{
-                        textAlign: message.sender === "me" ? "right" : "left",
-                        fontSize: "12px",
-                        color: "#00000073",
-                        marginTop: "4px",
-                      }}
-                    >
+                    {message.text}
+                    <div className={`message-time ${message.sender === "me" ? "message-time-right" : "message-time-left"}`}>
                       {message.time}
                     </div>
                   </div>
@@ -293,16 +240,9 @@ const Messages = () => {
               </div>
 
               {/* Message Input */}
-              <div
-                style={{
-                  padding: "16px",
-                  borderTop: "1px solid #f0f0f0",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Button type="text" icon={<PaperClipOutlined />} style={{ marginRight: "8px" }} />
-                <Button type="text" icon={<SmileOutlined />} style={{ marginRight: "8px" }} />
+              <div className="message-input-wrapper">
+                <Button type="text" icon={<PaperClipOutlined />} style={{ marginRight: 8 }} />
+                <Button type="text" icon={<SmileOutlined />} style={{ marginRight: 8 }} />
                 <Input
                   placeholder="Type a message..."
                   value={messageText}
@@ -314,26 +254,16 @@ const Messages = () => {
                   type="primary"
                   icon={<SendOutlined />}
                   onClick={handleSendMessage}
-                  style={{ marginLeft: "8px" }}
+                  style={{ marginLeft: 8 }}
                   disabled={!messageText.trim()}
                 />
               </div>
             </>
           ) : (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-                padding: "20px",
-              }}
-            >
+            <div className="chat-placeholder">
               <img
                 src="https://thanhnien.mediacdn.vn/Uploaded/phongdt/2022_10_23/cs-go-6318.jpg"
                 alt="Select a conversation"
-                style={{ marginBottom: "20px", opacity: 0.5, width: "90%", height: "90%" }}
               />
               <Title level={4}>Select a conversation</Title>
               <Paragraph type="secondary" style={{ textAlign: "center" }}>

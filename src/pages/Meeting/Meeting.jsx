@@ -25,6 +25,7 @@ import {
   EnvironmentOutlined,
   PlusOutlined,
 } from "@ant-design/icons"
+import "./Meeting.css"
 
 const { Title, Paragraph } = Typography
 const { TextArea } = Input
@@ -33,7 +34,6 @@ const Meeting = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [form] = Form.useForm()
 
-  // Sample meeting data
   const [meetings, setMeetings] = useState([
     {
       id: 1,
@@ -95,20 +95,22 @@ const Meeting = () => {
 
   const handleJoinMeeting = (id) => {
     setMeetings(
-      meetings.map((meeting) => (meeting.id === id ? { ...meeting, participants: meeting.participants + 1 } : meeting)),
+      meetings.map((meeting) =>
+        meeting.id === id ? { ...meeting, participants: meeting.participants + 1 } : meeting
+      )
     )
   }
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+    <div className="meeting-container">
+      <div className="meeting-header">
         <Title level={2}>Meetings</Title>
         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
           Create Meeting
         </Button>
       </div>
 
-      <Paragraph style={{ marginBottom: 24 }}>
+      <Paragraph className="meeting-description">
         Join online meetings with fellow riders to plan trips, discuss routes, and share experiences.
       </Paragraph>
 
@@ -118,7 +120,7 @@ const Meeting = () => {
             <Col xs={24} sm={12} md={8} key={meeting.id}>
               <Card
                 hoverable
-                style={{ height: "100%" }}
+                className="meeting-card"
                 actions={[
                   <Button key="join" type="primary" onClick={() => handleJoinMeeting(meeting.id)}>
                     Join Meeting
@@ -126,8 +128,8 @@ const Meeting = () => {
                 ]}
               >
                 <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <VideoCameraOutlined style={{ fontSize: 24, color: "#f5222d" }} />
+                  <div className="meeting-title">
+                    <VideoCameraOutlined className="meeting-icon" />
                     <Title level={4} style={{ margin: 0 }}>
                       {meeting.title}
                     </Title>
@@ -136,29 +138,25 @@ const Meeting = () => {
                   <Space direction="vertical" size="small">
                     <div>
                       <CalendarOutlined style={{ marginRight: 8 }} />
-                      <span>{meeting.date}</span>
+                      {meeting.date}
                     </div>
                     <div>
                       <ClockCircleOutlined style={{ marginRight: 8 }} />
-                      <span>{meeting.time}</span>
+                      {meeting.time}
                     </div>
                     <div>
                       <EnvironmentOutlined style={{ marginRight: 8 }} />
-                      <span>{meeting.location}</span>
+                      {meeting.location}
                     </div>
                     <div>
                       <UserOutlined style={{ marginRight: 8 }} />
-                      <span>Host: {meeting.host}</span>
+                      Host: {meeting.host}
                     </div>
                   </Space>
 
                   <Divider style={{ margin: "12px 0" }} />
-
                   <Paragraph ellipsis={{ rows: 2 }}>{meeting.description}</Paragraph>
-
-                  <div>
-                    <Tag color="blue">{meeting.participants} participants</Tag>
-                  </div>
+                  <Tag color="blue">{meeting.participants} participants</Tag>
                 </Space>
               </Card>
             </Col>
@@ -206,4 +204,3 @@ const Meeting = () => {
 }
 
 export default Meeting
-

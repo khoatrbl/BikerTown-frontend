@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "../Layout/Layout"; // Adjusted path to match your file name (layout.jsx)
-import Home from "../pages/Home";
-import Meeting from "../pages/Meeting";
+import Home from "../pages/Home/Home";
+import Meeting from "../pages/Meeting/Meeting";
 import Planners from "../pages/Planners";
-import Todo from "../pages/Todo";
-import History from "../pages/History";
-import Friends from "../pages/Friends";
-import Messages from "../pages/Messages";
+import Todo from "../pages/Todo/Todo";
+import History from "../pages/History/History";
+import Friends from "../pages/Friends/Friends";
+import Messages from "../pages/Messages/Messages";
 
 const AppRoutes = () => {
   return (

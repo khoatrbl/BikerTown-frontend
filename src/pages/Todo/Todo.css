@@ -1,0 +1,49 @@
+.todo-container {
+    background-color: rgb(241, 239, 236);
+    padding: 20px;
+  }
+  
+  .todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px dashed brown;
+    padding-bottom: 8px;
+  }
+  
+  .add-trip-btn {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+  
+  .add-location-btn {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+  
+  .todo-footer-input {
+    display: flex;
+  }
+  
+  .todo-card {
+    height: 100%;
+    border-radius: 25px;
+    padding: 0.7rem;
+  }
+  
+  .todo-footer-btn {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+  
+  .no-trips {
+    text-align: center;
+    margin: 40px 0;
+  }
+  
+  .modal-submit-btn {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+  

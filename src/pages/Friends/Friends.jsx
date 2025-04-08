@@ -1,8 +1,28 @@
 "use client"
 
 import { useState } from "react"
-import { Typography, Input, Button, List, Avatar, Card, Tabs, Space, Tag, Modal, Form, Divider, Empty } from "antd"
-import { UserAddOutlined, SearchOutlined, MessageOutlined, TeamOutlined } from "@ant-design/icons"
+import {
+  Typography,
+  Input,
+  Button,
+  List,
+  Avatar,
+  Card,
+  Tabs,
+  Space,
+  Tag,
+  Modal,
+  Form,
+  Divider,
+  Empty,
+} from "antd"
+import {
+  UserAddOutlined,
+  SearchOutlined,
+  MessageOutlined,
+  TeamOutlined,
+} from "@ant-design/icons"
+import "./Friends.css"
 
 const { Title, Paragraph, Text } = Typography
 const { TabPane } = Tabs
@@ -12,7 +32,6 @@ const Friends = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [form] = Form.useForm()
 
-  // Sample friends data
   const [friends, setFriends] = useState([
     {
       id: 1,
@@ -52,7 +71,6 @@ const Friends = () => {
     },
   ])
 
-  // Sample friend requests
   const [friendRequests, setFriendRequests] = useState([
     {
       id: 5,
@@ -80,7 +98,6 @@ const Friends = () => {
   }
 
   const handleAddFriend = (values) => {
-    // In a real app, this would send a friend request
     console.log("Friend request sent to:", values.email)
     setIsModalVisible(false)
     form.resetFields()
@@ -89,14 +106,7 @@ const Friends = () => {
   const acceptFriendRequest = (id) => {
     const request = friendRequests.find((req) => req.id === id)
     if (request) {
-      setFriends([
-        ...friends,
-        {
-          ...request,
-          status: "online",
-          trips: 0,
-        },
-      ])
+      setFriends([...friends, { ...request, status: "online", trips: 0 }])
       setFriendRequests(friendRequests.filter((req) => req.id !== id))
     }
   }
@@ -109,19 +119,19 @@ const Friends = () => {
     (friend) =>
       friend.name.toLowerCase().includes(searchText.toLowerCase()) ||
       friend.location.toLowerCase().includes(searchText.toLowerCase()) ||
-      friend.bike.toLowerCase().includes(searchText.toLowerCase()),
+      friend.bike.toLowerCase().includes(searchText.toLowerCase())
   )
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+      <div className="friends-header">
         <Title level={2}>Friends</Title>
         <Button type="primary" icon={<UserAddOutlined />} onClick={showModal}>
           Add Friend
         </Button>
       </div>
 
-      <Paragraph style={{ marginBottom: 24 }}>
+      <Paragraph className="friends-search">
         Connect with fellow riders, send messages, and plan trips together.
       </Paragraph>
 
@@ -129,13 +139,12 @@ const Friends = () => {
         <TabPane
           tab={
             <span>
-              <TeamOutlined />
-              My Friends
+              <TeamOutlined /> My Friends
             </span>
           }
           key="1"
         >
-          <div style={{ marginBottom: 16 }}>
+          <div className="friends-search">
             <Input
               placeholder="Search friends..."
               prefix={<SearchOutlined />}
@@ -152,19 +161,16 @@ const Friends = () => {
               renderItem={(friend) => (
                 <List.Item>
                   <Card hoverable>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <div style={{ position: "relative" }}>
+                    <div className="friend-card">
+                      <div className="friend-avatar-wrapper">
                         <Avatar size={64} src={friend.avatar} />
                         <div
+                          className="friend-status-indicator"
                           style={{
-                            position: "absolute",
-                            bottom: 0,
-                            right: 0,
-                            width: 12,
-                            height: 12,
-                            borderRadius: "50%",
-                            background: friend.status === "online" ? "#52c41a" : "#d9d9d9",
-                            border: "2px solid white",
+                            background:
+                              friend.status === "online"
+                                ? "#52c41a"
+                                : "#d9d9d9",
                           }}
                         />
                       </div>
@@ -172,21 +178,18 @@ const Friends = () => {
                         {friend.name}
                       </Title>
                       <Text type="secondary">{friend.location}</Text>
-
                       <Divider style={{ margin: "12px 0" }} />
-
-                      <div style={{ width: "100%" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                      <div className="friend-info">
+                        <div className="friend-info-row">
                           <Text>Bike:</Text>
                           <Text strong>{friend.bike}</Text>
                         </div>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div className="friend-info-row">
                           <Text>Trips:</Text>
                           <Text strong>{friend.trips}</Text>
                         </div>
                       </div>
-
-                      <Space style={{ marginTop: 16 }}>
+                      <Space className="friend-message-button">
                         <Button type="primary" icon={<MessageOutlined />}>
                           Message
                         </Button>
@@ -218,12 +221,8 @@ const Friends = () => {
                 <List.Item
                   key={request.id}
                   actions={[
-                    <Button type="primary" onClick={() => acceptFriendRequest(request.id)}>
-                      Accept
-                    </Button>,
-                    <Button danger onClick={() => rejectFriendRequest(request.id)}>
-                      Reject
-                    </Button>,
+                    <Button type="primary" onClick={() => acceptFriendRequest(request.id)}>Accept</Button>,
+                    <Button danger onClick={() => rejectFriendRequest(request.id)}>Reject</Button>,
                   ]}
                 >
                   <List.Item.Meta
@@ -274,4 +273,3 @@ const Friends = () => {
 }
 
 export default Friends
-

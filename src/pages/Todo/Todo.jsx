@@ -16,6 +16,7 @@ import {
   Tabs,
 } from "antd";
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import "./Todo.css";
 
 const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -70,22 +71,14 @@ const Todo = () => {
   const [editingTrip, setEditingTrip] = useState(null);
   const [locationForm] = Form.useForm();
   const [tripForm] = Form.useForm();
-  const [newItemTexts, setNewItemTexts] = useState({})
+  const [newItemTexts, setNewItemTexts] = useState({});
 
-  // Get the current active trip
   const currentTrip = trips.find((trip) => trip.id === activeTrip) || trips[0];
   const todoLists = currentTrip?.todoLists || [];
 
-  // Trip Modal Functions
   const showTripModal = (trip = null) => {
     setEditingTrip(trip);
-    if (trip) {
-      tripForm.setFieldsValue({
-        name: trip.name,
-      });
-    } else {
-      tripForm.resetFields();
-    }
+    trip ? tripForm.setFieldsValue({ name: trip.name }) : tripForm.resetFields();
     setIsTripModalVisible(true);
   };
 
@@ -97,19 +90,9 @@ const Todo = () => {
 
   const handleTripSubmit = (values) => {
     if (editingTrip) {
-      // Update existing trip
-      setTrips(
-        trips.map((trip) =>
-          trip.id === editingTrip.id ? { ...trip, name: values.name } : trip
-        )
-      );
+      setTrips(trips.map((trip) => (trip.id === editingTrip.id ? { ...trip, name: values.name } : trip)));
     } else {
-      // Create new trip
-      const newTrip = {
-        id: Date.now(),
-        name: values.name,
-        todoLists: [],
-      };
+      const newTrip = { id: Date.now(), name: values.name, todoLists: [] };
       setTrips([...trips, newTrip]);
       setActiveTrip(newTrip.id);
     }
@@ -119,21 +102,12 @@ const Todo = () => {
 
   const deleteTrip = (tripId) => {
     setTrips(trips.filter((trip) => trip.id !== tripId));
-    if (activeTrip === tripId) {
-      setActiveTrip(trips[0]?.id || null);
-    }
+    if (activeTrip === tripId) setActiveTrip(trips[0]?.id || null);
   };
 
-  // Location Modal Functions
   const showLocationModal = (todoList = null) => {
     setEditingTodoList(todoList);
-    if (todoList) {
-      locationForm.setFieldsValue({
-        location: todoList.location,
-      });
-    } else {
-      locationForm.resetFields();
-    }
+    todoList ? locationForm.setFieldsValue({ location: todoList.location }) : locationForm.resetFields();
     setIsLocationModalVisible(true);
   };
 
@@ -147,28 +121,20 @@ const Todo = () => {
     if (!currentTrip) return;
 
     if (editingTodoList) {
-      // Update existing todo list
       setTrips(
         trips.map((trip) =>
           trip.id === currentTrip.id
             ? {
                 ...trip,
                 todoLists: trip.todoLists.map((list) =>
-                  list.id === editingTodoList.id
-                    ? { ...list, location: values.location }
-                    : list
+                  list.id === editingTodoList.id ? { ...list, location: values.location } : list
                 ),
               }
             : trip
         )
       );
     } else {
-      // Create new todo list
-      const newTodoList = {
-        id: Date.now(),
-        location: values.location,
-        items: [],
-      };
+      const newTodoList = { id: Date.now(), location: values.location, items: [] };
       setTrips(
         trips.map((trip) =>
           trip.id === currentTrip.id
@@ -209,9 +175,7 @@ const Todo = () => {
                   ? {
                       ...list,
                       items: list.items.map((item) =>
-                        item.id === itemId
-                          ? { ...item, completed: !item.completed }
-                          : item
+                        item.id === itemId ? { ...item, completed: !item.completed } : item
                       ),
                     }
                   : list
@@ -223,28 +187,26 @@ const Todo = () => {
   };
 
   const addItemToList = (listId) => {
-    const text = newItemTexts[listId]?.trim()
-    if (!text || !currentTrip) return
-  
-    const newItem = { id: Date.now(), text, completed: false }
-  
+    const text = newItemTexts[listId]?.trim();
+    if (!text || !currentTrip) return;
+
+    const newItem = { id: Date.now(), text, completed: false };
+
     setTrips(
       trips.map((trip) =>
         trip.id === currentTrip.id
           ? {
               ...trip,
               todoLists: trip.todoLists.map((list) =>
-                list.id === listId ? { ...list, items: [...list.items, newItem] } : list,
+                list.id === listId ? { ...list, items: [...list.items, newItem] } : list
               ),
             }
-          : trip,
-      ),
-    )
-  
-    // Clear the input for that list
-    setNewItemTexts({ ...newItemTexts, [listId]: "" })
-  }
-  
+          : trip
+      )
+    );
+
+    setNewItemTexts({ ...newItemTexts, [listId]: "" });
+  };
 
   const deleteItem = (listId, itemId) => {
     if (!currentTrip) return;
@@ -255,12 +217,7 @@ const Todo = () => {
           ? {
               ...trip,
               todoLists: trip.todoLists.map((list) =>
-                list.id === listId
-                  ? {
-                      ...list,
-                      items: list.items.filter((item) => item.id !== itemId),
-                    }
-                  : list
+                list.id === listId ? { ...list, items: list.items.filter((item) => item.id !== itemId) } : list
               ),
             }
           : trip
@@ -273,166 +230,79 @@ const Todo = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "rgb(241, 239, 236)", padding: "20px" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-          borderColor: "black",
-          borderBottom: "1px dashed brown", 
-          paddingBottom: 8 
-        }}
-      >
+    <div className="todo-container">
+      <div className="todo-header">
         <Title level={2}>Trip Planner</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => showTripModal()}
-          style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => showTripModal()} className="add-trip-btn">
           Create To Do list
         </Button>
       </div>
 
       {trips.length > 0 ? (
-        <Tabs        
-          activeKey={activeTrip?.toString()}
-          onChange={handleTabChange}
-          type="card"
+        <Tabs activeKey={activeTrip?.toString()} onChange={handleTabChange} type="card"
           tabBarExtraContent={{
             right: activeTrip && (
               <Space>
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => showTripModal(currentTrip)}
-                >
-                  Edit Trip
-                </Button>
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => deleteTrip(activeTrip)}
-                >
-                  Delete Trip
-                </Button>
+                <Button icon={<EditOutlined />} onClick={() => showTripModal(currentTrip)}>Edit Trip</Button>
+                <Button danger icon={<DeleteOutlined />} onClick={() => deleteTrip(activeTrip)}>Delete Trip</Button>
               </Space>
             ),
           }}
         >
           {trips.map((trip) => (
             <TabPane tab={trip.name} key={trip.id.toString()}>
-              <div style={{ marginBottom: 24}}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 24,
-                  }}
-                >
-                  <Title level={4} style= {{color:"brown"}}>To Do Lists</Title>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => showLocationModal()}
-                    style={{
-                      backgroundColor: "#ff4d4f",
-                      borderColor: "#ff4d4f",
-                    }}
-                  >
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                  <Title level={4} style={{ color: "brown" }}>To Do Lists</Title>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => showLocationModal()} className="add-location-btn">
                     Add Location
                   </Button>
                 </div>
 
                 <Paragraph style={{ marginBottom: 24 }}>
-                  Create to-do lists for each location on your trip to stay
-                  organized and make sure you don't miss anything important.
+                  Create to-do lists for each location on your trip to stay organized and make sure you don't miss anything important.
                 </Paragraph>
 
                 <Row gutter={[24, 24]}>
                   {todoLists.map((todoList) => (
                     <Col xs={24} sm={12} md={6} key={todoList.id}>
-                      <Card
-                        title={todoList.location}
+                      <Card title={todoList.location}
                         extra={
                           <Space>
-                            <Button
-                              type="text"
-                              icon={<EditOutlined />}
-                              onClick={() => showLocationModal(todoList)}
-                            />
-                            <Button
-                              type="text"
-                              danger
-                              icon={<DeleteOutlined />}
-                              onClick={() => deleteTodoList(todoList.id)}
-                            />
+                            <Button type="text" icon={<EditOutlined />} onClick={() => showLocationModal(todoList)} />
+                            <Button type="text" danger icon={<DeleteOutlined />} onClick={() => deleteTodoList(todoList.id)} />
                           </Space>
                         }
-                        style={{
-                          height: "100%",
-                          borderRadius: "25px",
-                          padding: "0.7rem",
-                        }}
+                        className="todo-card"
                       >
                         <List
                           size="small"
                           dataSource={todoList.items}
                           renderItem={(item) => (
-                            <List.Item
-                              key={item.id}
-                              actions={[
-                                <Button
-                                  key={item.id}
-                                  type="text"
-                                  danger
-                                  icon={<DeleteOutlined />}
-                                  onClick={() =>
-                                    deleteItem(todoList.id, item.id)
-                                  }
-                                />,
-                              ]}
-                            >
+                            <List.Item key={item.id} actions={[
+                              <Button key={item.id} type="text" danger icon={<DeleteOutlined />} onClick={() => deleteItem(todoList.id, item.id)} />,
+                            ]}>
                               <Checkbox
                                 checked={item.completed}
-                                onChange={() =>
-                                  toggleItemCompletion(todoList.id, item.id)
-                                }
-                                style={{
-                                  textDecoration: item.completed
-                                    ? "line-through"
-                                    : "none",
-                                }}
+                                onChange={() => toggleItemCompletion(todoList.id, item.id)}
+                                style={{ textDecoration: item.completed ? "line-through" : "none" }}
                               >
                                 {item.text}
                               </Checkbox>
                             </List.Item>
                           )}
                           footer={
-                            <div style={{ display: "flex" }}>
+                            <div className="todo-footer-input">
                               <Input
                                 placeholder="Add new item"
                                 value={newItemTexts[todoList.id] || ""}
                                 onChange={(e) =>
-                                  setNewItemTexts({
-                                    ...newItemTexts,
-                                    [todoList.id]: e.target.value,
-                                  })
+                                  setNewItemTexts({ ...newItemTexts, [todoList.id]: e.target.value })
                                 }
                                 onPressEnter={() => addItemToList(todoList.id)}
                                 style={{ marginRight: 8 }}
                               />
-                              <Button
-                                type="primary"
-                                icon={<PlusOutlined />}
-                                onClick={() => addItemToList(todoList.id)}
-                                style={{
-                                  backgroundColor: "#ff4d4f",
-                                  borderColor: "#ff4d4f",
-                                }}
-                              />
+                              <Button type="primary" icon={<PlusOutlined />} onClick={() => addItemToList(todoList.id)} className="todo-footer-btn" />
                             </div>
                           }
                         />
@@ -445,48 +315,24 @@ const Todo = () => {
           ))}
         </Tabs>
       ) : (
-        <div style={{ textAlign: "center", margin: "40px 0" }}>
+        <div className="no-trips">
           <Title level={4}>No trips yet. Create your first trip!</Title>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => showTripModal()}
-            size="large"
-            style={{
-              marginTop: 16,
-              backgroundColor: "#ff4d4f",
-              borderColor: "#ff4d4f",
-            }}
-          >
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => showTripModal()} size="large" className="add-trip-btn">
             Create To Do list
           </Button>
         </div>
       )}
 
       {/* Trip Modal */}
-      <Modal
-        title={editingTrip ? "Edit Trip" : "Create New Trip"}
-        open={isTripModalVisible}
-        onCancel={handleTripCancel}
-        footer={null}
-      >
+      <Modal title={editingTrip ? "Edit Trip" : "Create New Trip"} open={isTripModalVisible} onCancel={handleTripCancel} footer={null}>
         <Form form={tripForm} layout="vertical" onFinish={handleTripSubmit}>
-          <Form.Item
-            name="name"
-            label="Trip Name"
-            rules={[{ required: true, message: "Please enter a trip name" }]}
-          >
+          <Form.Item name="name" label="Trip Name" rules={[{ required: true, message: "Please enter a trip name" }]}>
             <Input placeholder="e.g., Trip to Vũng Tàu" />
           </Form.Item>
-
           <Form.Item>
             <Space style={{ width: "100%", justifyContent: "flex-end" }}>
               <Button onClick={handleTripCancel}>Cancel</Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
-              >
+              <Button type="primary" htmlType="submit" className="modal-submit-btn">
                 {editingTrip ? "Update" : "Create"}
               </Button>
             </Space>
@@ -495,35 +341,15 @@ const Todo = () => {
       </Modal>
 
       {/* Location Modal */}
-      <Modal
-        title={editingTodoList ? "Edit Location" : "Add New Location"}
-        open={isLocationModalVisible}
-        onCancel={handleLocationCancel}
-        footer={null}
-      >
-        <Form
-          form={locationForm}
-          layout="vertical"
-          onFinish={handleLocationSubmit}
-        >
-          <Form.Item
-            name="location"
-            label="Location Name"
-            rules={[
-              { required: true, message: "Please enter a location name" },
-            ]}
-          >
+      <Modal title={editingTodoList ? "Edit Location" : "Add New Location"} open={isLocationModalVisible} onCancel={handleLocationCancel} footer={null}>
+        <Form form={locationForm} layout="vertical" onFinish={handleLocationSubmit}>
+          <Form.Item name="location" label="Location Name" rules={[{ required: true, message: "Please enter a location name" }]}>
             <Input placeholder="e.g., Vũng Tàu" />
           </Form.Item>
-
           <Form.Item>
             <Space style={{ width: "100%", justifyContent: "flex-end" }}>
               <Button onClick={handleLocationCancel}>Cancel</Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" }}
-              >
+              <Button type="primary" htmlType="submit" className="modal-submit-btn">
                 {editingTodoList ? "Update" : "Add"}
               </Button>
             </Space>
