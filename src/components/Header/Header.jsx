@@ -91,7 +91,7 @@ const Header = ({ isLoggedIn, onLogin, onLogout, toggleSidebar, collapsed }) => 
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <Space className="avatar-dropdown">
               <Avatar style={{ backgroundColor: "#f5222d" }} icon={<UserOutlined />} />
-              <span>Rider User</span>
+              <span>mmmmmmmmmmmmmmm</span>
             </Space>
           </Dropdown>
         ) : (

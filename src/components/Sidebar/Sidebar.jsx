@@ -39,9 +39,9 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
       disabled: !isLoggedIn,
     },
     {
-      key: "planners",
+      key: "schedules",
       icon: <EnvironmentOutlined />,
-      label: <Link to="/planners">Planners</Link>,
+      label: <Link to="/schedules">Schedules</Link>,
       disabled: !isLoggedIn,
     },
     {

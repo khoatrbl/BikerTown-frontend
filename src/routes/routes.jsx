@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AppLayout from "../Layout/Layout"; // Adjusted path to match your file name (layout.jsx)
+import AppLayout from "../Layout/Layout"; 
 import Home from "../pages/Home/Home";
 import Meeting from "../pages/Meeting/Meeting";
-import Planners from "../pages/Planners";
 import Todo from "../pages/Todo/Todo";
 import History from "../pages/History/History";
 import Friends from "../pages/Friends/Friends";
 import Messages from "../pages/Messages/Messages";
+import Schedules from "../pages/Schedules/Schedules";
 
 const AppRoutes = () => {
   return (
@@ -15,7 +15,7 @@ const AppRoutes = () => {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="meeting" element={<Meeting />} />
-          <Route path="planners" element={<Planners />} />
+          <Route path="schedules" element={<Schedules />} />
           <Route path="todo" element={<Todo />} />
           <Route path="history" element={<History />} />
           <Route path="friends" element={<Friends />} />
