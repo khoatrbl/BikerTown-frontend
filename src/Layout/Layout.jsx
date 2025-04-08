@@ -11,18 +11,22 @@ const { Content } = Layout;
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Check login state on location changes
   useEffect(() => {
-    // Check if user is logged in
-    const user = localStorage.getItem("user");
-    if (user) {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
       setIsLoggedIn(true);
+      setUser(JSON.parse(storedUser));
     } else {
-      // Redirect to home if trying to access protected routes
+      setIsLoggedIn(false);
+      setUser(null);
       const protectedRoutes = [
-        "/planners",
+        "/schedules",
         "/todo",
         "/history",
         "/friends",
@@ -34,19 +38,37 @@ const AppLayout = () => {
     }
   }, [location.pathname, navigate]);
 
+  // Listen for custom login/logout events to update state immediately
+  useEffect(() => {
+    const handleUserChange = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setIsLoggedIn(true);
+        setUser(JSON.parse(storedUser));
+      } else {
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    };
+
+    window.addEventListener("user-login", handleUserChange);
+    window.addEventListener("user-logout", handleUserChange);
+
+    return () => {
+      window.removeEventListener("user-login", handleUserChange);
+      window.removeEventListener("user-logout", handleUserChange);
+    };
+  }, [location.pathname, navigate]);
+
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
 
-  const handleLogin = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
-    setIsLoggedIn(true);
-    navigate("/");
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("user");
+    window.dispatchEvent(new Event("user-logout")); // Notify layout immediately
     setIsLoggedIn(false);
+    setUser(null);
     navigate("/");
   };
 
@@ -65,10 +87,10 @@ const AppLayout = () => {
         <Layout>
           <Header
             isLoggedIn={isLoggedIn}
-            onLogin={handleLogin}
-            onLogout={handleLogout}
             toggleSidebar={toggleSidebar}
+            onLogout={handleLogout}
             collapsed={collapsed}
+            user={user}
           />
           <Layout className="inner-layout">
             <Content className="content-style">

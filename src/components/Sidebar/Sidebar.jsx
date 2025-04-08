@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/img/helmetlogo.jpg";
-import "./Sidebar.css"; // import the CSS
+import "./Sidebar.css"; 
 
 const { Sider } = Layout;
 
