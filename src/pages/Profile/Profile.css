@@ -1,0 +1,49 @@
+/* Container for the profile page */
+.profile-container {
+    padding: 24px;
+  }
+  
+  /* Header section */
+  .profile-description {
+    margin-bottom: 24px;
+  }
+  
+  /* Profile Card Header (Personal Details) */
+  .profile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Avatar Column */
+  .profile-avatar-col {
+    text-align: center;
+  }
+  
+  /* Avatar styling */
+  .profile-avatar {
+    margin-bottom: 16px;
+  }
+  
+  /* Upload button styling */
+  .upload-button {
+    margin-top: 16px;
+  }
+  
+  /* Member info */
+  .member-info {
+    margin-top: 16px;
+  }
+  
+  /* Maintenance section footer */
+  .maintenance-footer {
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  /* Motorcycle image styling */
+  .motorcycle-image {
+    width: 100%;
+    border-radius: 8px;
+  }
+  

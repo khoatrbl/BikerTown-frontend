@@ -25,7 +25,7 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed, user }) => {
   const userMenuItems = [
     {
       key: "1",
-      label: <Link to="/settings">Profile</Link>,
+      label: <Link to="/profile">Profile</Link>,
       icon: <ProfileOutlined />,
     },
     {

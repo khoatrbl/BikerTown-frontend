@@ -68,7 +68,7 @@ const Footer = () => {
               </div>
               <div className="footer-contact-info">
                 <MailOutlined />
-                <Text style= {{color:"#fff"}}>info@ridersclub.com</Text>
+                <Text style= {{color:"#fff"}}>info@bikertown.com</Text>
               </div>
             </Space>
             <Button type="primary" className="footer-join-button">Join Our Club</Button>
