@@ -1,19 +1,5 @@
-import { useState } from "react";
-import {
-  Typography,
-  Card,
-  Form,
-  Input,
-  Button,
-  Space,
-  Divider,
-  Row,
-  Col,
-  List,
-  Tag,
-  Modal,
-  App,
-} from "antd";
+import { useState } from "react"
+import { Typography, Card, Form, Input, Button, Space, Divider, Row, Col, List, Tag, Modal, App, Select } from "antd"
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -21,14 +7,15 @@ import {
   EnvironmentOutlined,
   CalendarOutlined,
   ClockCircleOutlined,
-} from "@ant-design/icons";
-import "./Schedules.css";
+} from "@ant-design/icons"
+import "./Schedules.css"
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography
+const { Option } = Select
 
 const Schedules = () => {
-  const [form] = Form.useForm();
-  const [checkpoints, setCheckpoints] = useState([]);
+  const [form] = Form.useForm()
+  const [checkpoints, setCheckpoints] = useState([])
   const [schedules, setSchedules] = useState([
     {
       id: 1,
@@ -48,24 +35,24 @@ const Schedules = () => {
       time: "06:30 AM",
       status: "In Progress",
     },
-  ]);
-  const [editingSchedule, setEditingSchedule] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const { message } = App.useApp();
+  ])
+  const [editingSchedule, setEditingSchedule] = useState(null)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const { message, modal } = App.useApp()
 
   const addCheckpoint = () => {
-    const checkpoint = form.getFieldValue("checkpoint");
+    const checkpoint = form.getFieldValue("checkpoint")
     if (checkpoint) {
-      setCheckpoints([...checkpoints, checkpoint]);
-      form.setFieldsValue({ checkpoint: "" });
+      setCheckpoints([...checkpoints, checkpoint])
+      form.setFieldsValue({ checkpoint: "" })
     }
-  };
+  }
 
   const removeCheckpoint = (index) => {
-    const newCheckpoints = [...checkpoints];
-    newCheckpoints.splice(index, 1);
-    setCheckpoints(newCheckpoints);
-  };
+    const newCheckpoints = [...checkpoints]
+    newCheckpoints.splice(index, 1)
+    setCheckpoints(newCheckpoints)
+  }
 
   const handleSubmit = (values) => {
     const newSchedule = {
@@ -76,87 +63,78 @@ const Schedules = () => {
       date: values.date || new Date().toLocaleDateString(),
       time: values.time || "08:00 AM",
       status: values.status || "Upcoming",
-    };
-
-    if (editingSchedule) {
-      setSchedules(
-        schedules.map((schedule) =>
-          schedule.id === editingSchedule.id ? newSchedule : schedule
-        )
-      );
-      setEditingSchedule(null);
-      message.success("Schedule updated successfully!");
-    } else {
-      setSchedules([...schedules, newSchedule]);
-      message.success("New schedule created!");
     }
 
-    form.resetFields();
-    setCheckpoints([]);
-    setIsModalVisible(false);
-  };
+    if (editingSchedule) {
+      setSchedules(schedules.map((schedule) => (schedule.id === editingSchedule.id ? newSchedule : schedule)))
+      setEditingSchedule(null)
+      message.success("Schedule updated successfully!")
+    } else {
+      setSchedules([...schedules, newSchedule])
+      message.success("New schedule created!")
+    }
+
+    form.resetFields()
+    setCheckpoints([])
+    setIsModalVisible(false)
+  }
 
   const editSchedule = (schedule) => {
-    setEditingSchedule(schedule);
-    setCheckpoints(schedule.checkpoints);
+    setEditingSchedule(schedule)
+    setCheckpoints(schedule.checkpoints)
     form.setFieldsValue({
       start: schedule.start,
       destination: schedule.destination,
       date: schedule.date,
       time: schedule.time,
       status: schedule.status,
-    });
-    setIsModalVisible(true);
-  };
+    })
+    setIsModalVisible(true)
+  }
 
   const deleteSchedule = (id) => {
-    Modal.confirm({
+    modal.confirm({
       title: "Are you sure you want to delete this schedule?",
       content: "This action cannot be undone.",
       onOk() {
-        setSchedules(schedules.filter((schedule) => schedule.id !== id));
-        message.success("Schedule deleted successfully!");
+        setSchedules(schedules.filter((schedule) => schedule.id !== id))
+        message.success("Schedule deleted successfully!")
       },
-    });
-  };
+    })
+  }
 
   const handleCancel = () => {
-    form.resetFields();
-    setCheckpoints([]);
-    setEditingSchedule(null);
-    setIsModalVisible(false);
-  };
+    form.resetFields()
+    setCheckpoints([])
+    setEditingSchedule(null)
+    setIsModalVisible(false)
+  }
 
   const getStatusColor = (status) => {
     switch (status) {
       case "Upcoming":
-        return "blue";
+        return "blue"
       case "In Progress":
-        return "green";
+        return "green"
       case "Delayed":
-        return "orange";
+        return "orange"
       default:
-        return "default";
+        return "default"
     }
-  };
+  }
 
   return (
     <div>
       <div className="schedules-header">
         <Title level={2}>Ongoing Schedules</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setIsModalVisible(true)}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalVisible(true)}>
           Create New Schedule
         </Button>
       </div>
 
-      <Paragraph className="schedules-description">
-        View and manage your upcoming and ongoing motorcycle trips. Completed
-        trips will be moved to History.
-      </Paragraph>
+      <div className="schedules-description">
+        View and manage your upcoming and ongoing motorcycle trips. Completed trips will be moved to History.
+      </div>
 
       <Row gutter={[24, 24]}>
         {schedules.map((schedule) => (
@@ -165,21 +143,14 @@ const Schedules = () => {
               title={
                 <div className="schedule-card-title">
                   <EnvironmentOutlined style={{ color: "#f5222d" }} />
-                  <span>{schedule.start} to {schedule.destination}</span>
+                  <span>
+                    {schedule.start} to {schedule.destination}
+                  </span>
                 </div>
               }
-              extra={
-                <Tag color={getStatusColor(schedule.status)}>
-                  {schedule.status}
-                </Tag>
-              }
+              extra={<Tag color={getStatusColor(schedule.status)}>{schedule.status}</Tag>}
               actions={[
-                <Button
-                  key="edit"
-                  type="text"
-                  icon={<EditOutlined />}
-                  onClick={() => editSchedule(schedule)}
-                >
+                <Button key="edit" type="text" icon={<EditOutlined />} onClick={() => editSchedule(schedule)}>
                   Edit
                 </Button>,
                 <Button
@@ -202,6 +173,20 @@ const Schedules = () => {
                   <ClockCircleOutlined />
                   <span>{schedule.time}</span>
                 </Space>
+
+                {schedule.checkpoints && schedule.checkpoints.length > 0 && (
+                  <>
+                    <Divider style={{ margin: "8px 0" }} />
+                    <div>
+                      <strong>Checkpoints:</strong>
+                      <ul className="checkpoint-preview">
+                        {schedule.checkpoints.map((checkpoint, index) => (
+                          <li key={index}>{checkpoint}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
               </Space>
             </Card>
           </Col>
@@ -215,7 +200,14 @@ const Schedules = () => {
         footer={null}
         width={600}
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          initialValues={{
+            status: "Upcoming",
+          }}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -239,38 +231,22 @@ const Schedules = () => {
 
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item
-                name="date"
-                label="Date"
-                rules={[{ required: true, message: "Please enter date" }]}
-              >
+              <Form.Item name="date" label="Date" rules={[{ required: true, message: "Please enter date" }]}>
                 <Input placeholder="e.g., June 15, 2023" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
-                name="time"
-                label="Time"
-                rules={[{ required: true, message: "Please enter time" }]}
-              >
+              <Form.Item name="time" label="Time" rules={[{ required: true, message: "Please enter time" }]}>
                 <Input placeholder="e.g., 08:00 AM" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
-                name="status"
-                label="Status"
-                rules={[{ required: true, message: "Please select status" }]}
-              >
-                <Input.Group compact>
-                  <Form.Item name="status" noStyle>
-                    <select className="status-select" defaultValue="Upcoming">
-                      <option value="Upcoming">Upcoming</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Delayed">Delayed</option>
-                    </select>
-                  </Form.Item>
-                </Input.Group>
+              <Form.Item name="status" label="Status" rules={[{ required: true, message: "Please select status" }]}>
+                <Select>
+                  <Option value="Upcoming">Upcoming</Option>
+                  <Option value="In Progress">In Progress</Option>
+                  <Option value="Delayed">Delayed</Option>
+                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -278,19 +254,13 @@ const Schedules = () => {
           <Divider>Checkpoints</Divider>
 
           <Form.Item label="Add Checkpoint">
-            <Input.Group compact>
+            {/* Replace Input.Group with Space.Compact */}
+            <Space.Compact style={{ width: "100%" }}>
               <Form.Item name="checkpoint" noStyle>
-                <Input
-                  style={{ width: "calc(100% - 40px)" }}
-                  placeholder="e.g., Bò sữa 22"
-                />
+                <Input style={{ width: "calc(100% - 40px)" }} placeholder="e.g., Bò sữa 22" />
               </Form.Item>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={addCheckpoint}
-              />
-            </Input.Group>
+              <Button type="primary" icon={<PlusOutlined />} onClick={addCheckpoint} />
+            </Space.Compact>
           </Form.Item>
 
           {checkpoints.length > 0 && (
@@ -304,6 +274,7 @@ const Schedules = () => {
                     key={index}
                     actions={[
                       <Button
+                        key="delete"
                         type="text"
                         danger
                         icon={<DeleteOutlined />}
@@ -329,7 +300,7 @@ const Schedules = () => {
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default Schedules;
+export default Schedules

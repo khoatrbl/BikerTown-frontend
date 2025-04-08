@@ -1,21 +1,22 @@
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, App } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { message: antdMessage } = App.useApp();
 
   const handleLoginSubmit = (values) => {
     if (values.email === "user@gmail.com" && values.password === "123") {
       const userData = { email: values.email, name: "Rider User" };
       localStorage.setItem("user", JSON.stringify(userData)); 
       window.dispatchEvent(new Event("user-login")); 
-      message.success("Login successful!");
+      antdMessage.success("Login successful!");
       form.resetFields();
       navigate("/"); 
     } else {
-      message.error("Invalid credentials. Try user@gmail.com/123");
+        antdMessage.error("Invalid credentials. Try user@gmail.com/123");
     }
   };
 

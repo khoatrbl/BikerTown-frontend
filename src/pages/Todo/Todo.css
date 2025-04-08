@@ -1,49 +1,70 @@
+/* Todo.css */
 .todo-container {
-    background-color: rgb(241, 239, 236);
-    padding: 20px;
+    padding: 24px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
   }
   
   .todo-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px dashed brown;
-    padding-bottom: 8px;
+    margin-bottom: 24px;
   }
   
-  .add-trip-btn {
-    background-color: #ff4d4f;
-    border-color: #ff4d4f;
-  }
-  
+  .add-trip-btn,
   .add-location-btn {
-    background-color: #ff4d4f;
-    border-color: #ff4d4f;
+    background-color: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
+  }
+  
+  .add-trip-btn:hover,
+  .add-location-btn:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  
+  .todo-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   .todo-footer-input {
     display: flex;
-  }
-  
-  .todo-card {
-    height: 100%;
-    border-radius: 25px;
-    padding: 0.7rem;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
   }
   
   .todo-footer-btn {
-    background-color: #ff4d4f;
-    border-color: #ff4d4f;
+    background-color: #52c41a;
+    border-color: #52c41a;
+    color: #fff;
+  }
+  
+  .todo-footer-btn:hover {
+    background-color: #73d13d;
+    border-color: #73d13d;
+  }
+  
+  .modal-submit-btn {
+    background-color: #1890ff;
+    border-color: #1890ff;
+    color: #fff;
+  }
+  
+  .modal-submit-btn:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
   }
   
   .no-trips {
     text-align: center;
-    margin: 40px 0;
+    margin-top: 48px;
   }
   
-  .modal-submit-btn {
-    background-color: #ff4d4f;
-    border-color: #ff4d4f;
+  .no-trips .add-trip-btn {
+    margin-top: 16px;
   }
   

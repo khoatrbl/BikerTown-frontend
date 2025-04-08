@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   
   .schedules-description {
@@ -15,26 +15,26 @@
     gap: 8px;
   }
   
-  .checkpoint-card {
-    margin-bottom: 16px;
-  }
-  
-  .checkpoint-list .ant-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .checkpoint-list .ant-btn {
-    padding: 0;
-    height: auto;
-  }
-  
   .status-select {
     width: 100%;
     height: 32px;
     border: 1px solid #d9d9d9;
     border-radius: 2px;
     padding: 4px 11px;
+  }
+  
+  .checkpoint-card {
+    margin-bottom: 16px;
+  }
+  
+  .checkpoint-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .checkpoint-preview {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 14px;
   }
   

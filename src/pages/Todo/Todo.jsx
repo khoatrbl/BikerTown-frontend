@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Typography, Card, Button, Input, List, Checkbox, Row, Col, Space, Modal, Form, Tabs, App } from "antd"
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons"
@@ -58,7 +56,7 @@ const Todo = () => {
   const [locationForm] = Form.useForm()
   const [tripForm] = Form.useForm()
   const [newItemTexts, setNewItemTexts] = useState({})
-  const { message } = App.useApp()
+  const { message, modal } = App.useApp() // Get modal from App context
 
   const currentTrip = trips.find((trip) => trip.id === activeTrip) || trips[0]
   const todoLists = currentTrip?.todoLists || []
@@ -90,7 +88,8 @@ const Todo = () => {
   }
 
   const deleteTrip = (tripId) => {
-    Modal.confirm({
+    // Use modal from App context instead of Modal.confirm
+    modal.confirm({
       title: "Are you sure you want to delete this trip?",
       content: "This action cannot be undone.",
       onOk() {
@@ -146,7 +145,8 @@ const Todo = () => {
   const deleteTodoList = (listId) => {
     if (!currentTrip) return
 
-    Modal.confirm({
+    // Use modal from App context instead of Modal.confirm
+    modal.confirm({
       title: "Are you sure you want to delete this location?",
       content: "All tasks in this location will be deleted.",
       onOk() {
