@@ -416,40 +416,7 @@ const Profile = () => {
                       </Button>
                     </Form.Item>
                   </Form>
-                </Card>
-
-                <Card title="Notification Settings" style={{ marginTop: 24 }}>
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={[
-                      {
-                        title: "Email Notifications",
-                        description: "Receive email notifications about new trips, meetings, and messages",
-                        defaultChecked: true,
-                      },
-                      {
-                        title: "Trip Reminders",
-                        description: "Receive reminders about upcoming trips",
-                        defaultChecked: true,
-                      },
-                      {
-                        title: "Friend Requests",
-                        description: "Receive notifications about new friend requests",
-                        defaultChecked: true,
-                      },
-                      {
-                        title: "Marketing Emails",
-                        description: "Receive promotional emails and special offers",
-                        defaultChecked: false,
-                      },
-                    ]}
-                    renderItem={(item) => (
-                      <List.Item key={item.title} actions={[<Switch defaultChecked={item.defaultChecked} />]}>
-                        <List.Item.Meta title={item.title} description={item.description} />
-                      </List.Item>
-                    )}
-                  />
-                </Card>
+                </Card>               
               </>
             ),
           },
@@ -511,73 +478,6 @@ const Profile = () => {
                       </Form>
                     </Col>
                   </Row>
-                </Card>
-
-                <Card title="Maintenance Records" style={{ marginTop: 24 }}>
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={[
-                      {
-                        id: 1,
-                        date: "2023-03-15",
-                        service: "Regular Maintenance",
-                        mileage: "5,200 km",
-                        cost: "$120",
-                        notes: "Oil change, brake check, chain adjustment",
-                      },
-                      {
-                        id: 2,
-                        date: "2022-12-10",
-                        service: "Tire Replacement",
-                        mileage: "4,500 km",
-                        cost: "$250",
-                        notes: "Replaced both front and rear tires",
-                      },
-                      {
-                        id: 3,
-                        date: "2022-09-05",
-                        service: "Regular Maintenance",
-                        mileage: "3,800 km",
-                        cost: "$100",
-                        notes: "Oil change, air filter replacement",
-                      },
-                    ]}
-                    renderItem={(item) => (
-                      <List.Item
-                        key={item.id}
-                        actions={[
-                          <Button key="edit" type="link">
-                            Edit
-                          </Button>,
-                          <Button key="delete" type="link" danger>
-                            Delete
-                          </Button>,
-                        ]}
-                      >
-                        <List.Item.Meta
-                          title={`${item.service} (${item.date})`}
-                          description={
-                            <>
-                              <p>
-                                <strong>Mileage:</strong> {item.mileage}
-                              </p>
-                              <p>
-                                <strong>Cost:</strong> {item.cost}
-                              </p>
-                              <p>
-                                <strong>Notes:</strong> {item.notes}
-                              </p>
-                            </>
-                          }
-                        />
-                      </List.Item>
-                    )}
-                  />
-                  <div className="maintenance-footer">
-                    <Button type="primary" icon={<PlusOutlined />}>
-                      Add Maintenance Record
-                    </Button>
-                  </div>
                 </Card>
               </>
             ),
