@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Typography, Card, Form, Input, Button, Space, Divider, Row, Col, List, Tag, Modal, App, Select } from "antd"
+import { Typography, Card, Form, Input, Button, Space, Row, Col, Tag, Modal, App, Select } from "antd"
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -15,13 +15,11 @@ const { Option } = Select
 
 const Schedules = () => {
   const [form] = Form.useForm()
-  const [checkpoints, setCheckpoints] = useState([])
   const [schedules, setSchedules] = useState([
     {
       id: 1,
       start: "Ho Chi Minh City",
       destination: "Vung Tau",
-      checkpoints: ["Long An", "Bò sữa 22", "Petro Bà Rịa"],
       date: "May 25, 2023",
       time: "07:00 AM",
       status: "Upcoming",
@@ -30,7 +28,6 @@ const Schedules = () => {
       id: 2,
       start: "Ho Chi Minh City",
       destination: "Da Lat",
-      checkpoints: ["Dong Nai", "Bao Loc"],
       date: "June 10, 2023",
       time: "06:30 AM",
       status: "In Progress",
@@ -40,26 +37,11 @@ const Schedules = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { message, modal } = App.useApp()
 
-  const addCheckpoint = () => {
-    const checkpoint = form.getFieldValue("checkpoint")
-    if (checkpoint) {
-      setCheckpoints([...checkpoints, checkpoint])
-      form.setFieldsValue({ checkpoint: "" })
-    }
-  }
-
-  const removeCheckpoint = (index) => {
-    const newCheckpoints = [...checkpoints]
-    newCheckpoints.splice(index, 1)
-    setCheckpoints(newCheckpoints)
-  }
-
   const handleSubmit = (values) => {
     const newSchedule = {
       id: editingSchedule ? editingSchedule.id : Date.now(),
       start: values.start,
       destination: values.destination,
-      checkpoints: [...checkpoints],
       date: values.date || new Date().toLocaleDateString(),
       time: values.time || "08:00 AM",
       status: values.status || "Upcoming",
@@ -75,13 +57,11 @@ const Schedules = () => {
     }
 
     form.resetFields()
-    setCheckpoints([])
     setIsModalVisible(false)
   }
 
   const editSchedule = (schedule) => {
     setEditingSchedule(schedule)
-    setCheckpoints(schedule.checkpoints)
     form.setFieldsValue({
       start: schedule.start,
       destination: schedule.destination,
@@ -105,7 +85,6 @@ const Schedules = () => {
 
   const handleCancel = () => {
     form.resetFields()
-    setCheckpoints([])
     setEditingSchedule(null)
     setIsModalVisible(false)
   }
@@ -173,20 +152,6 @@ const Schedules = () => {
                   <ClockCircleOutlined />
                   <span>{schedule.time}</span>
                 </Space>
-
-                {schedule.checkpoints && schedule.checkpoints.length > 0 && (
-                  <>
-                    <Divider style={{ margin: "8px 0" }} />
-                    <div>
-                      <strong>Checkpoints:</strong>
-                      <ul className="checkpoint-preview">
-                        {schedule.checkpoints.map((checkpoint, index) => (
-                          <li key={index}>{checkpoint}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </>
-                )}
               </Space>
             </Card>
           </Col>
@@ -250,44 +215,6 @@ const Schedules = () => {
               </Form.Item>
             </Col>
           </Row>
-
-          <Divider>Checkpoints</Divider>
-
-          <Form.Item label="Add Checkpoint">
-            {/* Replace Input.Group with Space.Compact */}
-            <Space.Compact style={{ width: "100%" }}>
-              <Form.Item name="checkpoint" noStyle>
-                <Input style={{ width: "calc(100% - 40px)" }} placeholder="e.g., Bò sữa 22" />
-              </Form.Item>
-              <Button type="primary" icon={<PlusOutlined />} onClick={addCheckpoint} />
-            </Space.Compact>
-          </Form.Item>
-
-          {checkpoints.length > 0 && (
-            <Card size="small" title="Checkpoints" className="checkpoint-card">
-              <List
-                size="small"
-                dataSource={checkpoints}
-                className="checkpoint-list"
-                renderItem={(item, index) => (
-                  <List.Item
-                    key={index}
-                    actions={[
-                      <Button
-                        key="delete"
-                        type="text"
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => removeCheckpoint(index)}
-                      />,
-                    ]}
-                  >
-                    {index + 1}. {item}
-                  </List.Item>
-                )}
-              />
-            </Card>
-          )}
 
           <Form.Item>
             <Space style={{ width: "100%", justifyContent: "flex-end" }}>
