@@ -60,7 +60,7 @@ const Profile = () => {
           display_name: "John Rider",
           gender: true, // true for male, false for female
           dob: "1990-05-15",
-          vehicle: "Honda CBR650R",
+          vehicle: "Honda CUB 50",
           created_date: "2022-03-10T08:30:00",
           contact: {
             contact_id: 1,
@@ -213,7 +213,7 @@ const Profile = () => {
                     <Avatar
                       size={120}
                       icon={<UserOutlined />}
-                      src="/placeholder.svg?height=120&width=120"
+                      src="https://i.pinimg.com/564x/91/1b/88/911b881dd6f2e2e4a55838bf0072bdc1.jpg"
                       className="profile-avatar"
                     />
                     {isEditing && (
@@ -557,7 +557,7 @@ const Profile = () => {
                   <Row gutter={[24, 24]}>
                     <Col xs={24} md={8}>
                       <img
-                        src="/placeholder.svg?height=200&width=300"
+                        src="https://i.pinimg.com/736x/5e/1c/ea/5e1ceab1bb1d35b8f723c122be26345a.jpg"
                         alt="Motorcycle"
                         className="motorcycle-image"
                       />
