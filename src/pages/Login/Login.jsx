@@ -7,16 +7,35 @@ const Login = () => {
   const navigate = useNavigate();
   const { message: antdMessage } = App.useApp();
 
-  const handleLoginSubmit = (values) => {
-    if (values.email === "user@gmail.com" && values.password === "123") {
-      const userData = { email: values.email, name: "Rider User" };
-      localStorage.setItem("user", JSON.stringify(userData)); 
-      window.dispatchEvent(new Event("user-login")); 
-      antdMessage.success("Login successful!");
-      form.resetFields();
-      navigate("/"); 
-    } else {
-        antdMessage.error("Invalid credentials. Try user@gmail.com/123");
+  const handleLoginSubmit = async (values) => {
+    // Create FormData instance and append the username and password fields
+    const formData = new FormData();
+    formData.append("username", values.username);
+    formData.append("password", values.password);
+
+    try {
+      // Submit the formData to the backend API
+      const response = await fetch("http://127.0.0.1:8000/login", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Assuming the backend returns user data on successful login
+        localStorage.setItem("user", JSON.stringify(data));
+        console.log(data)
+        window.dispatchEvent(new Event("user-login"));
+        antdMessage.success("Login successful!");
+        form.resetFields();
+        navigate("/");
+      } else {
+        // If response is not ok, display an error message
+        antdMessage.error(data.message || "Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      antdMessage.error("Login error: " + error.message);
     }
   };
 
@@ -25,18 +44,18 @@ const Login = () => {
       <h2>Login</h2>
       <Form form={form} layout="vertical" onFinish={handleLoginSubmit}>
         <Form.Item
-          name="email"
-          label="Email"
+          name="username"
+          label="Username"
           rules={[{ required: true, message: "Please input your email!" }]}
         >
-          <Input placeholder="user@gmail.com" />
+          <Input/>
         </Form.Item>
         <Form.Item
           name="password"
           label="Password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password placeholder="123" />
+          <Input.Password/>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" block>

@@ -21,7 +21,7 @@ const { Header: AntHeader } = Layout;
 
 const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed, user }) => {
   const navigate = useNavigate();
-
+  
   const userMenuItems = [
     {
       key: "1",
@@ -55,7 +55,7 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed, user }) => {
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <Space className="avatar-dropdown">
               <Avatar style={{ backgroundColor: "#f5222d" }} icon={<UserOutlined />} />
-              <span>{user?.name || "User"}</span>
+              <span>{user?.display_name || "User"}</span>
             </Space>
           </Dropdown>
         ) : (
