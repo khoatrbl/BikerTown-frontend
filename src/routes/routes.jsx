@@ -10,6 +10,7 @@ import Schedules from "../pages/Schedules/Schedules";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Profile from "../pages/Profile/Profile";
+import Room from "../pages/Room/Room";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
 
           <Route path="profile" element={<Profile />} />
           <Route path="meeting" element={<Meeting />} />
+          <Route path="room" element={<Room />} />
           <Route path="schedules" element={<Schedules />} />
           <Route path="todo" element={<Todo />} />
           <Route path="history" element={<History />} />
