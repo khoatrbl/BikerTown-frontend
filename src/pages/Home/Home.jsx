@@ -176,7 +176,7 @@ const Home = () => {
             style={{
               height: "500px",
               background:
-                "url(https://images2.thanhnien.vn/zoom/700_438/Uploaded/maiha/2022_09_24/hang-son-doong-chup-man-hinh-cnbc-7488.jpg) center/cover no-repeat",
+                "url(https://images.baodantoc.vn/uploads/2024/Thang-8/Ngay-30/Anh/hangkieu.jpg) center/cover no-repeat",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -300,18 +300,32 @@ const Home = () => {
           padding: "60px 0",
           margin: "40px -24px -24px -24px",
           backgroundImage:
-            "url('https://www.asiakingtravel.com/images/thumbs/2024/02/8519/saigon-night-banner_1900x700xcrop.webp')",
+            "url('https://media.vneconomy.vn/images/upload/2023/07/01/vietnam-becomes-seventh-most-searched-country-worldwide-494.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
         <Title
-          level={2}
-          style={{ textAlign: "center", marginBottom: 40, color: "yellow" }}
-        >
-          What Our Riders Say
-        </Title>
+  level={2}
+  style={{
+    textAlign: "center",
+    marginBottom: 40,
+  }}
+>
+  <span
+    style={{
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      color: "yellow",
+      padding: "10px",
+      borderRadius: "8px",
+      display: "inline-block",
+    }}
+  >
+    What Our Riders Say
+  </span>
+</Title>
+
         <Row gutter={[24, 24]} justify="center">
           <Col xs={24} sm={20} md={16} lg={12}>
             <Carousel autoplay dots={{ className: "custom-carousel-dots" }}>
