@@ -36,7 +36,7 @@ const AppLayout = () => {
         "/room",
       ];
       if (protectedRoutes.includes(location.pathname)) {
-        navigate("/");
+        navigate("/login");
       }
     }
   }, [location.pathname, navigate]);
