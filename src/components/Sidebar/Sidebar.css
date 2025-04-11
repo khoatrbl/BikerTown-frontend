@@ -32,9 +32,9 @@
     text-align: center;
     color: #f5222d;
     position: absolute;
-    bottom: 20px;
+    bottom: 0px;
     width: 100%;
-    background: #fff;
+    background: lightgray;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     overflow: hidden; 
