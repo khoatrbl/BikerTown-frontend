@@ -24,7 +24,7 @@ const Login = () => {
   
       // Assuming success if no error is thrown
       localStorage.setItem("user", JSON.stringify(data));
-      console.log(data);
+      console.log(data.username);
       window.dispatchEvent(new Event("user-login"));
       antdMessage.success("Login successful!");
       form.resetFields();

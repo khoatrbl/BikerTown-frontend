@@ -32,6 +32,7 @@ import {
 import dayjs from "dayjs";
 import "./Profile.css";
 import vietnamData from "../../Data/VietnamCitiesData.json";
+// import axios from "axios";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -98,6 +99,47 @@ const Profile = () => {
 
     fetchUserData();
   }, [form, message]);
+
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       setLoading(true); // Optional: show loading while fetching
+  
+  //       const response = await axios.get("http://localhost:8000/profile", {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       });
+  
+  //       const userData = response.data;
+  //       setUserData(userData);
+  
+  //       // Set form values using real data
+  //       form.setFieldsValue({
+  //         username: userData.username,
+  //         display_name: userData.display_name,
+  //         gender: userData.gender,
+  //         dob: dayjs(userData.dob),
+  //         vehicle: userData.vehicle,
+  //         phone: userData.contact.phone,
+  //         email: userData.contact.email,
+  //         address: userData.contact.address,
+  //         district: userData.contact.district,
+  //         city: userData.contact.city,
+  //       });
+  
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       setTimeout(() => {
+  //         message.error("Failed to load profile data");
+  //       });
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  
+  //   fetchUserData();
+  // }, [form, message]);
 
   const handleEdit = () => {
     setIsEditing(true);

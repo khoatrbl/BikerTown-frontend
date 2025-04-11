@@ -2,13 +2,17 @@ import { Form, Input, Button, Select, DatePicker, App } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import axios from "axios";
+import { useState } from "react";
+import vietnamData from "../../Data/VietnamCitiesData.json";
+import { EnvironmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
 const Register = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { message } = App.useApp()
+  const [selectedCity, setSelectedCity] = useState(null);
+  const { message } = App.useApp();
 
   const handleRegisterSubmit = async (values) => {
     try {
@@ -71,7 +75,9 @@ const Register = () => {
         <Form.Item
           name="dob"
           label="Date of Birth"
-          rules={[{ required: true, message: "Please select your date of birth!" }]}
+          rules={[
+            { required: true, message: "Please select your date of birth!" },
+          ]}
         >
           <DatePicker style={{ width: "100%" }} />
         </Form.Item>
@@ -87,7 +93,9 @@ const Register = () => {
         <Form.Item
           name="phone"
           label="Phone"
-          rules={[{ required: true, message: "Please input your phone number!" }]}
+          rules={[
+            { required: true, message: "Please input your phone number!" },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -141,19 +149,47 @@ const Register = () => {
         </Form.Item>
 
         <Form.Item
-          name="district"
-          label="District"
-          rules={[{ required: true, message: "Please input your district!" }]}
+          name="city"
+          label="City"
+          rules={[
+            {
+              required: true,
+              message: "Please select your city",
+            },
+          ]}
         >
-          <Input />
+          <Select
+            placeholder="Select a city"
+            onChange={(value) => setSelectedCity(value)}
+          >
+            {vietnamData.map((city) => (
+              <Option key={city.name} value={city.name}>
+                {city.name}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
-          name="city"
-          label="City"
-          rules={[{ required: true, message: "Please input your city!" }]}
+          name="district"
+          label="District"
+          rules={[
+            {
+              required: true,
+              message: "Please select your district",
+            },
+          ]}
         >
-          <Input />
+          <Select placeholder="Select a district">
+            {selectedCity &&
+              vietnamData
+                .find((city) => city.name === selectedCity)
+                ?.districts.map((district) => (
+                  <Option key={district} value={district}>
+                    {district}
+                  </Option>
+                ))}
+          </Select>
         </Form.Item>
 
         <Form.Item>

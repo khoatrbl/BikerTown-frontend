@@ -16,12 +16,25 @@ import {
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
+import { useEffect, useState } from "react";
 
 const { Header: AntHeader } = Layout;
 
-const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed, user }) => {
+const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
   const navigate = useNavigate();
+  const [user1, setUser1] = useState(null);
   
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        setUser1(JSON.parse(userData));
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, [isLoggedIn]);
+
   const userMenuItems = [
     {
       key: "1",
@@ -55,7 +68,7 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed, user }) => {
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <Space className="avatar-dropdown">
               <Avatar style={{ backgroundColor: "#f5222d" }} icon={<UserOutlined />} />
-              <span>{user?.display_name || "User"}</span>
+              <span>{user1?.display_name || "User"}</span>
             </Space>
           </Dropdown>
         ) : (

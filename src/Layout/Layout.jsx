@@ -31,6 +31,9 @@ const AppLayout = () => {
         "/history",
         "/friends",
         "/messages",
+        "/profile",
+        "/meeting",
+        "/room",
       ];
       if (protectedRoutes.includes(location.pathname)) {
         navigate("/");
