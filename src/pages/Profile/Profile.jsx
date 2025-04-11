@@ -251,6 +251,7 @@ const Profile = () => {
                         city: userData.user_contact.city,
                       }}
                     >
+                    <Divider style={{marginBottom: 30, color: "brown"}} orientation="left">User Information</Divider>
                       <Row gutter={16}>
                         <Col xs={24} md={12}>
                           <Form.Item
@@ -334,7 +335,7 @@ const Profile = () => {
                         />
                       </Form.Item>
 
-                      <Divider orientation="left">Contact Information</Divider>
+                      <Divider style={{marginBottom: 30, color: "brown"}} orientation="left">Contact Information</Divider>
 
                       <Row gutter={16}>
                         <Col xs={24} md={12}>
