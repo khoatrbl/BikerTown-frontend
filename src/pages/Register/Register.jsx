@@ -1,15 +1,40 @@
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, Select, DatePicker, App } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
+import axios from "axios";
+
+const { Option } = Select;
 
 const Register = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { message } = App.useApp()
 
-  const handleRegisterSubmit = (values) => {
-    message.success("Registration successful! Please login.");
-    form.resetFields();
-    navigate("/login");
+  const handleRegisterSubmit = async (values) => {
+    try {
+      const formData = new FormData();
+      formData.append("username", values.username);
+      formData.append("password", values.password);
+      formData.append("display_name", values.display_name);
+      formData.append("gender", values.gender);
+      formData.append("dob", values.dob.format("YYYY-MM-DD"));
+      formData.append("vehicle", values.vehicle);
+      formData.append("phone", values.phone);
+      formData.append("email", values.email);
+      formData.append("address", values.address);
+      formData.append("district", values.district);
+      formData.append("city", values.city);
+
+      // Submit to your backend
+      await axios.post("http://localhost:8000/register", formData); // replace URL as needed
+
+      message.success("Registration successful! Please login.");
+      form.resetFields();
+      navigate("/login");
+    } catch (error) {
+      message.error("Registration failed. Please try again.");
+      console.error(error);
+    }
   };
 
   return (
@@ -17,12 +42,56 @@ const Register = () => {
       <h2>Register</h2>
       <Form form={form} layout="vertical" onFinish={handleRegisterSubmit}>
         <Form.Item
-          name="name"
-          label="Full Name"
-          rules={[{ required: true, message: "Please input your name!" }]}
+          name="username"
+          label="Username"
+          rules={[{ required: true, message: "Please input your username!" }]}
         >
           <Input />
         </Form.Item>
+
+        <Form.Item
+          name="display_name"
+          label="Full Name"
+          rules={[{ required: true, message: "Please input your full name!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="gender"
+          label="Gender"
+          rules={[{ required: true, message: "Please select your gender!" }]}
+        >
+          <Select placeholder="Select gender">
+            <Option value={true}>Male</Option>
+            <Option value={false}>Female</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="dob"
+          label="Date of Birth"
+          rules={[{ required: true, message: "Please select your date of birth!" }]}
+        >
+          <DatePicker style={{ width: "100%" }} />
+        </Form.Item>
+
+        <Form.Item
+          name="vehicle"
+          label="Vehicle"
+          rules={[{ required: true, message: "Please input your vehicle!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="phone"
+          label="Phone"
+          rules={[{ required: true, message: "Please input your phone number!" }]}
+        >
+          <Input />
+        </Form.Item>
+
         <Form.Item
           name="email"
           label="Email"
@@ -33,6 +102,7 @@ const Register = () => {
         >
           <Input />
         </Form.Item>
+
         <Form.Item
           name="password"
           label="Password"
@@ -40,6 +110,7 @@ const Register = () => {
         >
           <Input.Password />
         </Form.Item>
+
         <Form.Item
           name="confirmPassword"
           label="Confirm Password"
@@ -60,6 +131,31 @@ const Register = () => {
         >
           <Input.Password />
         </Form.Item>
+
+        <Form.Item
+          name="address"
+          label="Address"
+          rules={[{ required: true, message: "Please input your address!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="district"
+          label="District"
+          rules={[{ required: true, message: "Please input your district!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="city"
+          label="City"
+          rules={[{ required: true, message: "Please input your city!" }]}
+        >
+          <Input />
+        </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit" block>
             Register

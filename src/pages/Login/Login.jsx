@@ -1,5 +1,6 @@
 import { Form, Input, Button, App } from "antd";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Login.css";
 
 const Login = () => {
@@ -8,34 +9,32 @@ const Login = () => {
   const { message: antdMessage } = App.useApp();
 
   const handleLoginSubmit = async (values) => {
-    // Create FormData instance and append the username and password fields
     const formData = new FormData();
     formData.append("username", values.username);
     formData.append("password", values.password);
-
+  
     try {
-      // Submit the formData to the backend API
-      const response = await fetch("http://127.0.0.1:8000/login", {
-        method: "POST",
-        body: formData,
+      const response = await axios.post("http://127.0.0.1:8000/login", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Assuming the backend returns user data on successful login
-        localStorage.setItem("user", JSON.stringify(data));
-        console.log(data)
-        window.dispatchEvent(new Event("user-login"));
-        antdMessage.success("Login successful!");
-        form.resetFields();
-        navigate("/");
-      } else {
-        // If response is not ok, display an error message
-        antdMessage.error(data.message || "Invalid credentials. Please try again.");
-      }
+  
+      const data = response.data;
+  
+      // Assuming success if no error is thrown
+      localStorage.setItem("user", JSON.stringify(data));
+      console.log(data);
+      window.dispatchEvent(new Event("user-login"));
+      antdMessage.success("Login successful!");
+      form.resetFields();
+      navigate("/");
     } catch (error) {
-      antdMessage.error("Login error: " + error.message);
+      if (error.response) {
+        antdMessage.error(error.response.data.message || "Invalid credentials. Please try again.");
+      } else {
+        antdMessage.error("Login error: " + error.message);
+      }
     }
   };
 
