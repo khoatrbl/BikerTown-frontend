@@ -2,11 +2,13 @@ import { Form, Input, Button, App } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
+import { useState } from "react";
 
 const Login = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { message: antdMessage } = App.useApp();
+  const [loading, setLoading] = useState(false);
 
   const handleLoginSubmit = async (values) => {
     const formData = new FormData();
@@ -14,6 +16,7 @@ const Login = () => {
     formData.append("password", values.password);
   
     try {
+      setLoading(true);
       const response = await axios.post("http://127.0.0.1:8000/login", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -34,9 +37,40 @@ const Login = () => {
         antdMessage.error(error.response.data.message || "Invalid credentials. Please try again.");
       } else {
         antdMessage.error("Login error: " + error.message);
-      }
+      } 
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div
+          aria-label="Orange and tan hamster running in a metal wheel"
+          role="img"
+          className="wheel-and-hamster"
+        >
+          <div className="wheel"></div>
+          <div className="hamster">
+            <div className="hamster__body">
+              <div className="hamster__head">
+                <div className="hamster__ear"></div>
+                <div className="hamster__eye"></div>
+                <div className="hamster__nose"></div>
+              </div>
+              <div className="hamster__limb hamster__limb--fr"></div>
+              <div className="hamster__limb hamster__limb--fl"></div>
+              <div className="hamster__limb hamster__limb--br"></div>
+              <div className="hamster__limb hamster__limb--bl"></div>
+              <div className="hamster__tail"></div>
+            </div>
+          </div>
+          <div className="spoke"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="login-container">
