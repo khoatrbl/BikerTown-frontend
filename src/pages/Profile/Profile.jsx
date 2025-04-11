@@ -32,7 +32,9 @@ import {
 import dayjs from "dayjs";
 import "./Profile.css";
 import vietnamData from "../../Data/VietnamCitiesData.json";
-// import axios from "axios";
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -45,54 +47,52 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCity, setSelectedCity] = useState("TP. Hồ Chí Minh");
   const { message } = App.useApp();
+  const navigate = useNavigate();
 
-  // Simulate fetching user data from API
+  // Fetch user data from API
   useEffect(() => {
-    // In a real app, you would fetch this data from your API
     const fetchUserData = async () => {
       try {
-        // Simulating API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setLoading(true); // Optional: show loading while fetching
 
-        // Mock user data based on the database schema
-        const mockUserData = {
-          user_id: 1,
-          username: "rider123",
-          display_name: "John Rider",
-          gender: true, // true for male, false for female
-          dob: "1990-05-15",
-          vehicle: "Honda CUB 50",
-          created_date: "2022-03-10T08:30:00",
-          contact: {
-            contact_id: 1,
-            phone: "+84 123 456 789",
-            email: "john.rider@example.com",
-            address: "123 Rider Street",
-            district: "Quận 1",
-            city: "TP. Hồ Chí Minh",
+        const local = localStorage.getItem("user");
+        const token = JSON.parse(local).token;
+
+        const response = await axios.get("http://localhost:8000/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        };
-
-        setUserData(mockUserData);
-
-        // Set form values
-        form.setFieldsValue({
-          username: mockUserData.username,
-          display_name: mockUserData.display_name,
-          gender: mockUserData.gender,
-          dob: dayjs(mockUserData.dob),
-          vehicle: mockUserData.vehicle,
-          phone: mockUserData.contact.phone,
-          email: mockUserData.contact.email,
-          address: mockUserData.contact.address,
-          district: mockUserData.contact.district,
-          city: mockUserData.contact.city,
         });
 
-        setLoading(false);
+        const userData = response.data;
+        setUserData(userData);
+
+        // Set form values using real data
+        form.setFieldsValue({
+          username: userData.user.username,
+          display_name: userData.user.display_name,
+          gender: userData.user.gender,
+          dob: dayjs(userData.user.dob),
+          vehicle: userData.user.vehicle,
+          phone: userData.user_contact.phone,
+          email: userData.user_contact.email,
+          address: userData.user_contact.address,
+          district: userData.user_contact.district,
+          city: userData.user_contact.city,
+        });
       } catch (error) {
         console.error("Error fetching user data:", error);
-        message.error("Failed to load profile data");
+
+        if (error.response && error.response.status == 401) {
+          console.log("Token is invalid.");
+          message.error("Session expired");
+          navigate("/login");
+        }
+
+        setTimeout(() => {
+          message.error("Failed to load profile data");
+        });
+      } finally {
         setLoading(false);
       }
     };
@@ -100,63 +100,22 @@ const Profile = () => {
     fetchUserData();
   }, [form, message]);
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       setLoading(true); // Optional: show loading while fetching
-
-  //       const response = await axios.get("http://localhost:8000/profile", {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       });
-
-  //       const userData = response.data;
-  //       setUserData(userData);
-
-  //       // Set form values using real data
-  //       form.setFieldsValue({
-  //         username: userData.username,
-  //         display_name: userData.display_name,
-  //         gender: userData.gender,
-  //         dob: dayjs(userData.dob),
-  //         vehicle: userData.vehicle,
-  //         phone: userData.contact.phone,
-  //         email: userData.contact.email,
-  //         address: userData.contact.address,
-  //         district: userData.contact.district,
-  //         city: userData.contact.city,
-  //       });
-
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //       setTimeout(() => {
-  //         message.error("Failed to load profile data");
-  //       });
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, [form, message]);
-
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleCancel = () => {
     form.setFieldsValue({
-      username: userData.username,
-      display_name: userData.display_name,
-      gender: userData.gender,
-      dob: dayjs(userData.dob),
-      vehicle: userData.vehicle,
-      phone: userData.contact.phone,
-      email: userData.contact.email,
-      address: userData.contact.address,
-      district: userData.contact.district,
-      city: userData.city,
+      username: userData.user.username,
+      display_name: userData.user.display_name,
+      gender: userData.user.gender,
+      dob: dayjs(userData.user.dob),
+      vehicle: userData.user.vehicle,
+      phone: userData.user_contact.phone,
+      email: userData.user_contact.email,
+      address: userData.user_contact.address,
+      district: userData.user_contact.district,
+      city: userData.user_contact.city,
     });
     setIsEditing(false);
   };
@@ -304,16 +263,16 @@ const Profile = () => {
                       onFinish={handleSubmit}
                       disabled={!isEditing}
                       initialValues={{
-                        username: userData.username,
-                        display_name: userData.display_name,
-                        gender: userData.gender,
-                        dob: dayjs(userData.dob),
-                        vehicle: userData.vehicle,
-                        phone: userData.contact.phone,
-                        email: userData.contact.email,
-                        address: userData.contact.address,
-                        district: userData.contact.district,
-                        city: userData.city,
+                        username: userData.user.username,
+                        display_name: userData.user.display_name,
+                        gender: userData.user.gender,
+                        dob: dayjs(userData.user.dob),
+                        vehicle: userData.user.vehicle,
+                        phone: userData.user_contact.phone,
+                        email: userData.user_contact.email,
+                        address: userData.user_contact.address,
+                        district: userData.user_contact.district,
+                        city: userData.user_contact.city,
                       }}
                     >
                       <Row gutter={16}>
