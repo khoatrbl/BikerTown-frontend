@@ -574,8 +574,8 @@ const Profile = () => {
                           <Col span={12}>
                             <Form.Item
                               label="Motorcycle Model"
-                              name="model"
-                              initialValue={userData.vehicle}
+                              name="vehicle"
+                              initialValue={userData.user.vehicle}
                             >
                               <Input disabled={!isEditing} />
                             </Form.Item>

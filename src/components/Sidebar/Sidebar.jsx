@@ -82,6 +82,7 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
         selectedKeys={[selectedKey]}
         items={menuItems}
       />
+      
       {isLoggedIn && (
         <div className={`sidebar-notification ${collapsed ? "hidden" : ""}`}>
           <div className="shake">
