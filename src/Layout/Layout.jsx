@@ -86,7 +86,9 @@ const AppLayout = () => {
       }}
     >
       <Layout className="full-height-layout">
-        <Sidebar collapsed={collapsed} isLoggedIn={isLoggedIn} />
+        {isLoggedIn && (
+          <Sidebar collapsed={collapsed} isLoggedIn={isLoggedIn} />
+        )}
         <Layout>
           <Header
             isLoggedIn={isLoggedIn}
