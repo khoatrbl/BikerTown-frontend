@@ -34,6 +34,7 @@ const AppLayout = () => {
         "/profile",
         "/meeting",
         "/room",
+        "/home",
       ];
       if (protectedRoutes.includes(location.pathname)) {
         navigate("/login");
