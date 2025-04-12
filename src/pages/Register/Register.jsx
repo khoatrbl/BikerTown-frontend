@@ -42,165 +42,169 @@ const Register = () => {
   };
 
   return (
-    <div className="register-container">
-      <h2>Register</h2>
-      <Form form={form} layout="vertical" onFinish={handleRegisterSubmit}>
-        <Form.Item
-          name="username"
-          label="Username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="display_name"
-          label="Full Name"
-          rules={[{ required: true, message: "Please input your full name!" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="gender"
-          label="Gender"
-          rules={[{ required: true, message: "Please select your gender!" }]}
-        >
-          <Select placeholder="Select gender">
-            <Option value={true}>Male</Option>
-            <Option value={false}>Female</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          name="dob"
-          label="Date of Birth"
-          rules={[
-            { required: true, message: "Please select your date of birth!" },
-          ]}
-        >
-          <DatePicker style={{ width: "100%" }} />
-        </Form.Item>
-
-        <Form.Item
-          name="vehicle"
-          label="Vehicle"
-          rules={[{ required: true, message: "Please input your vehicle!" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="phone"
-          label="Phone"
-          rules={[
-            { required: true, message: "Please input your phone number!" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            { required: true, message: "Please input your email!" },
-            { type: "email", message: "Please enter a valid email!" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="password"
-          label="Password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
-
-        <Form.Item
-          name="confirmPassword"
-          label="Confirm Password"
-          dependencies={["password"]}
-          rules={[
-            { required: true, message: "Please confirm your password!" },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("The two passwords do not match!")
-                );
-              },
-            }),
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
-
-        <Form.Item
-          name="address"
-          label="Address"
-          rules={[{ required: true, message: "Please input your address!" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="city"
-          label="City"
-          rules={[
-            {
-              required: true,
-              message: "Please select your city",
-            },
-          ]}
-        >
-          <Select
-            placeholder="Select a city"
-            onChange={(value) => setSelectedCity(value)}
+    <div className="register-page" style={{ backgroundImage: `url(https://mrwallpaper.com/images/hd/1920x1080-full-hd-nature-empty-road-trees-around-z6u9c3faplzs5ung.jpg)` }}>
+      <div className="register-container">
+        <h2>Register</h2>
+        <Form form={form} layout="vertical" onFinish={handleRegisterSubmit}>
+          <Form.Item
+            name="username"
+            label="Username"
+            rules={[{ required: true, message: "Please input your username!" }]}
           >
-            {vietnamData.map((city) => (
-              <Option key={city.name} value={city.name}>
-                {city.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          name="district"
-          label="District"
-          rules={[
-            {
-              required: true,
-              message: "Please select your district",
-            },
-          ]}
-        >
-          <Select placeholder="Select a district">
-            {selectedCity &&
-              vietnamData
-                .find((city) => city.name === selectedCity)
-                ?.districts.map((district) => (
-                  <Option key={district} value={district}>
-                    {district}
-                  </Option>
-                ))}
-          </Select>
-        </Form.Item>
+          <Form.Item
+            name="display_name"
+            label="Full Name"
+            rules={[
+              { required: true, message: "Please input your full name!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" block>
-            Register
-          </Button>
-        </Form.Item>
-        <div className="form-footer">
-          Already have an account? <a href="/login">Login</a>
-        </div>
-      </Form>
+          <Form.Item
+            name="gender"
+            label="Gender"
+            rules={[{ required: true, message: "Please select your gender!" }]}
+          >
+            <Select placeholder="Select gender">
+              <Option value={true}>Male</Option>
+              <Option value={false}>Female</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="dob"
+            label="Date of Birth"
+            rules={[
+              { required: true, message: "Please select your date of birth!" },
+            ]}
+          >
+            <DatePicker style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            name="vehicle"
+            label="Vehicle"
+            rules={[{ required: true, message: "Please input your vehicle!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="phone"
+            label="Phone"
+            rules={[
+              { required: true, message: "Please input your phone number!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="confirmPassword"
+            label="Confirm Password"
+            dependencies={["password"]}
+            rules={[
+              { required: true, message: "Please confirm your password!" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The two passwords do not match!")
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: "Please input your address!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="city"
+            label="City"
+            rules={[
+              {
+                required: true,
+                message: "Please select your city",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Select a city"
+              onChange={(value) => setSelectedCity(value)}
+            >
+              {vietnamData.map((city) => (
+                <Option key={city.name} value={city.name}>
+                  {city.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="district"
+            label="District"
+            rules={[
+              {
+                required: true,
+                message: "Please select your district",
+              },
+            ]}
+          >
+            <Select placeholder="Select a district">
+              {selectedCity &&
+                vietnamData
+                  .find((city) => city.name === selectedCity)
+                  ?.districts.map((district) => (
+                    <Option key={district} value={district}>
+                      {district}
+                    </Option>
+                  ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Register
+            </Button>
+          </Form.Item>
+          <div className="form-footer">
+            Already have an account? <a href="/login">Login</a>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 };
