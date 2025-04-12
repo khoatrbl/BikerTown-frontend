@@ -11,13 +11,20 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Profile from "../pages/Profile/Profile";
 import Room from "../pages/Room/Room";
+import Slider from "../pages/Home/Slider";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          <Route index element={<Home />} />
+          {/* <Route index element={<Home />} />
+          <Route path="slider" element={<Slider />} /> */}
+
+          <Route index element={<Slider />} />
+          <Route path="home" element= {<Home />}/>
+
+          {/* Public Routes */}
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
