@@ -4,7 +4,6 @@ import "./Register.css";
 import axios from "axios";
 import { useState } from "react";
 import vietnamData from "../../Data/VietnamCitiesData.json";
-import { EnvironmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 

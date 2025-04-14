@@ -191,6 +191,7 @@ const Profile = () => {
     }
   };
 
+  // Handle password change
   const handlePasswordChange = (values) => {
     // In a real app, you would send this data to your API
     console.log("Password change data:", values);
