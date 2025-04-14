@@ -42,7 +42,7 @@ const Register = () => {
   };
 
   return (
-    <div className="register-page" style={{ backgroundImage: `url(https://mrwallpaper.com/images/hd/1920x1080-full-hd-nature-empty-road-trees-around-z6u9c3faplzs5ung.jpg)` }}>
+    <div className="register-page">
       <div className="register-container">
         <h2>Register</h2>
         <Form form={form} layout="vertical" onFinish={handleRegisterSubmit}>

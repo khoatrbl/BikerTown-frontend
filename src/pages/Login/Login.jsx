@@ -49,7 +49,7 @@ const Login = () => {
   }
 
   return (
-    <div className="login-page" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1480497490787-505ec076689f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91bnRhaW4lMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D)` }}>
+    <div className="login-page">
       <div className="login-container">
         <h2>Login</h2>
         <Form form={form} layout="vertical" onFinish={handleLoginSubmit}>
