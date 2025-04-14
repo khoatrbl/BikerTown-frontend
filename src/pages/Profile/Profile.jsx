@@ -81,6 +81,9 @@ const Profile = () => {
           district: userData.user_contact.district,
           city: userData.user_contact.city,
         });
+
+        // Update selectedCity state so that district list matches the saved city
+        setSelectedCity(userData.user_contact.city);
       } catch (error) {
         console.error("Error fetching user data:", error);
 
@@ -295,7 +298,12 @@ const Profile = () => {
                         city: userData.user_contact.city,
                       }}
                     >
-                    <Divider style={{marginBottom: 30, color: "brown"}} orientation="left">User Information</Divider>
+                      <Divider
+                        style={{ marginBottom: 30, color: "brown" }}
+                        orientation="left"
+                      >
+                        User Information
+                      </Divider>
                       <Row gutter={16}>
                         <Col xs={24} md={12}>
                           <Form.Item
@@ -380,7 +388,12 @@ const Profile = () => {
                         />
                       </Form.Item>
 
-                      <Divider style={{marginBottom: 30, color: "brown"}} orientation="left">Contact Information</Divider>
+                      <Divider
+                        style={{ marginBottom: 30, color: "brown" }}
+                        orientation="left"
+                      >
+                        Contact Information
+                      </Divider>
 
                       <Row gutter={16}>
                         <Col xs={24} md={12}>
