@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
+import YouTubeBackground from "./YoutubeVideo";
 
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;

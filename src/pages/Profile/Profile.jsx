@@ -33,6 +33,7 @@ import dayjs from "dayjs";
 import "./Profile.css";
 import vietnamData from "../../Data/VietnamCitiesData.json";
 import axios from "axios";
+import HamsterLoading from "../../components/Loading/HamsterLoading";
 
 import { useNavigate } from "react-router-dom";
 
@@ -98,7 +99,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [form, message]);
+  }, [form, message, navigate]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -198,32 +199,7 @@ const Profile = () => {
   };
 
   if (loading) {
-    return (
-      <div className="loading-container">
-        <div
-          aria-label="Orange and tan hamster running in a metal wheel"
-          role="img"
-          className="wheel-and-hamster"
-        >
-          <div className="wheel"></div>
-          <div className="hamster">
-            <div className="hamster__body">
-              <div className="hamster__head">
-                <div className="hamster__ear"></div>
-                <div className="hamster__eye"></div>
-                <div className="hamster__nose"></div>
-              </div>
-              <div className="hamster__limb hamster__limb--fr"></div>
-              <div className="hamster__limb hamster__limb--fl"></div>
-              <div className="hamster__limb hamster__limb--br"></div>
-              <div className="hamster__limb hamster__limb--bl"></div>
-              <div className="hamster__tail"></div>
-            </div>
-          </div>
-          <div className="spoke"></div>
-        </div>
-      </div>
-    );
+    return <HamsterLoading />;
   }
 
   return (
@@ -318,6 +294,7 @@ const Profile = () => {
                         city: userData.user_contact.city,
                       }}
                     >
+                    <Divider style={{marginBottom: 30, color: "brown"}} orientation="left">User Information</Divider>
                       <Row gutter={16}>
                         <Col xs={24} md={12}>
                           <Form.Item
@@ -401,7 +378,7 @@ const Profile = () => {
                         />
                       </Form.Item>
 
-                      <Divider orientation="left">Contact Information</Divider>
+                      <Divider style={{marginBottom: 30, color: "brown"}} orientation="left">Contact Information</Divider>
 
                       <Row gutter={16}>
                         <Col xs={24} md={12}>
@@ -640,8 +617,8 @@ const Profile = () => {
                           <Col span={12}>
                             <Form.Item
                               label="Motorcycle Model"
-                              name="model"
-                              initialValue={userData.vehicle}
+                              name="vehicle"
+                              initialValue={userData.user.vehicle}
                             >
                               <Input disabled={!isEditing} />
                             </Form.Item>

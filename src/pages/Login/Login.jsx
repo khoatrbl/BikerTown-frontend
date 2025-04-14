@@ -2,11 +2,14 @@ import { Form, Input, Button, App } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
+import { useState } from "react";
+import HamsterLoading from "../../components/Loading/HamsterLoading";
 
 const Login = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { message: antdMessage } = App.useApp();
+  const [loading, setLoading] = useState(false);
 
   const handleLoginSubmit = async (values) => {
     const formData = new FormData();
@@ -14,6 +17,7 @@ const Login = () => {
     formData.append("password", values.password);
   
     try {
+      setLoading(true);
       const response = await axios.post("http://127.0.0.1:8000/login", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -34,9 +38,15 @@ const Login = () => {
         antdMessage.error(error.response.data.message || "Invalid credentials. Please try again.");
       } else {
         antdMessage.error("Login error: " + error.message);
-      }
+      } 
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <HamsterLoading />;
+  }
 
   return (
     <div className="login-container">

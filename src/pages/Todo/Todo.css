@@ -14,16 +14,9 @@
   
   .add-trip-btn,
   .add-location-btn {
-    background-color: #1890ff;
-    border-color: #1890ff;
     color: #fff;
   }
   
-  .add-trip-btn:hover,
-  .add-location-btn:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
-  }
   
   .todo-card {
     border-radius: 12px;
@@ -38,26 +31,14 @@
   }
   
   .todo-footer-btn {
-    background-color: #52c41a;
-    border-color: #52c41a;
     color: #fff;
   }
-  
-  .todo-footer-btn:hover {
-    background-color: #73d13d;
-    border-color: #73d13d;
-  }
+
   
   .modal-submit-btn {
-    background-color: #1890ff;
-    border-color: #1890ff;
     color: #fff;
   }
-  
-  .modal-submit-btn:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
-  }
+
   
   .no-trips {
     text-align: center;
