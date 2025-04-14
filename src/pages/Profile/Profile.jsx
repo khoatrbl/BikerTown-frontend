@@ -120,31 +120,74 @@ const Profile = () => {
     setIsEditing(false);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     // In a real app, you would send this data to your API
     console.log("Updated profile data:", values);
 
-    // Update local state
-    const updatedUserData = {
-      ...userData,
-      username: values.username,
-      display_name: values.display_name,
-      gender: values.gender,
-      dob: values.dob.format("YYYY-MM-DD"),
-      vehicle: values.vehicle,
-      contact: {
-        ...userData.contact,
-        phone: values.phone,
-        email: values.email,
-        address: values.address,
-        district: values.district,
-        city: values.city,
-      },
-    };
+    const formData = new FormData();
+    formData.append("display_name", values.display_name);
+    formData.append("gender", values.gender);
+    formData.append("dob", values.dob.format("YYYY-MM-DD"));
+    formData.append("vehicle", values.vehicle);
+    formData.append("phone", values.phone);
+    formData.append("email", values.email);
+    formData.append("address", values.address);
+    formData.append("district", values.district);
+    formData.append("city", values.city);
 
-    setUserData(updatedUserData);
-    setIsEditing(false);
-    message.success("Profile updated successfully!");
+    const local = localStorage.getItem("user");
+    const token = JSON.parse(local).token;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/update-profile",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the correct header
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Handle the response
+      if (response.status === 200) {
+        // Update client view with updated data
+        const response = await axios.get("http://localhost:8000/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userData = response.data;
+        setUserData(userData);
+
+        // Set form values using real data
+        form.setFieldsValue({
+          username: userData.user.username,
+          display_name: userData.user.display_name,
+          gender: userData.user.gender,
+          dob: dayjs(userData.user.dob),
+          vehicle: userData.user.vehicle,
+          phone: userData.user_contact.phone,
+          email: userData.user_contact.email,
+          address: userData.user_contact.address,
+          district: userData.user_contact.district,
+          city: userData.user_contact.city,
+        });
+
+        setIsEditing(false);
+        message.success("Profile updated successfully!");
+      }
+    } catch (error) {
+      // Handle the error
+      console.error("Error:", error);
+      if (error.response) {
+        message.error(`Server responded with error: ${error.response.status}`);
+      } else {
+        message.error(`Server is irreponsive.`);
+      }
+    }
   };
 
   const handlePasswordChange = (values) => {
