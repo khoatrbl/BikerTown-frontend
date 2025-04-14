@@ -310,6 +310,7 @@ const Profile = () => {
                             <Input
                               prefix={<UserOutlined />}
                               placeholder="Username"
+                              disabled
                             />
                           </Form.Item>
                         </Col>
