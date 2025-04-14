@@ -18,11 +18,11 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          {/* <Route index element={<Home />} />
-          <Route path="slider" element={<Slider />} /> */}
+          <Route index element={<Home />} />
+          <Route path="slider" element={<Slider />} />
 
-          <Route index element={<Slider />} />
-          <Route path="home" element= {<Home />}/>
+          {/* <Route index element={<Slider />} />
+          <Route path="home" element= {<Home />}/> */}
 
           {/* Public Routes */}
 
