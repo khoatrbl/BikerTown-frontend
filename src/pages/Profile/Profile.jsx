@@ -195,11 +195,43 @@ const Profile = () => {
   };
 
   // Handle password change
-  const handlePasswordChange = (values) => {
+  const handlePasswordChange = async (values) => {
     // In a real app, you would send this data to your API
-    console.log("Password change data:", values);
-    message.success("Password changed successfully!");
-    passwordForm.resetFields();
+    const local = localStorage.getItem("user");
+    const token = JSON.parse(local).token;
+
+    const formData = new FormData();
+    formData.append("current_pwd", values.currentPassword);
+    formData.append("new_pwd", values.newPassword);
+    formData.append("cf_new_pwd", values.confirmPassword);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/update-password",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the correct header
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        message.success("Password changed successfully!");
+        passwordForm.resetFields();
+      }
+    } catch (error) {
+      // Handle the error
+      console.error("Error:", error);
+      if (error.response) {
+        message.error(
+          `Server responded with error: ${error.response.status} - ${error.response.data.detail}`
+        );
+      } else {
+        message.error(`Server is irreponsive.`);
+      }
+    }
   };
 
   if (loading) {
