@@ -20,8 +20,25 @@ const AppLayout = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setIsLoggedIn(true);
-      setUser(JSON.parse(storedUser));
+      try {
+        const token = JSON.parse(local).token;
+        const response = axios.get("http://localhost:8000/validate-token", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setIsLoggedIn(true);
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+
+        if (error.response && error.response.status == 401) {
+          console.log("Token is invalid.");
+          message.error("Session expired");
+          navigate("/login");
+        }
+      }
     } else {
       setIsLoggedIn(false);
       setUser(null);
