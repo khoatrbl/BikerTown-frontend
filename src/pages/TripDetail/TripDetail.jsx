@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import RadarMap from "../../components/RadarMap/RadarMap";
 import axios from "axios";
 
 const TripDetail = () => {
@@ -28,16 +29,10 @@ const TripDetail = () => {
   return (
     <div>
       <h2>Trip Details</h2>
-      <p>
-        <b>Start:</b> {trip.start}
-      </p>
-      <p>
-        <b>Destination:</b> {trip.destination}
-      </p>
-      <p>
-        <b>Status:</b> {trip.trip_status}
-      </p>
+
       {/* Add more details as needed */}
+
+      <RadarMap></RadarMap>
     </div>
   );
 };

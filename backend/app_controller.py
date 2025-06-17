@@ -274,7 +274,7 @@ async def get_trips(token: str=Depends(oauth2_scheme),
 
     user_id = user_id[0]  # Extract the user_id from the tuple
 
-    # Query to get all trip schedules for the user, excluding finished trips
+    # Query to get all trips for the user, excluding finished trips
     trips = db.query(Trip).join(User, Trip.user_id == User.user_id).filter(User.user_id == user_id).order_by(
         case(
                 (Trip.trip_status == "in_progress", 0),
@@ -290,16 +290,16 @@ async def get_trips(token: str=Depends(oauth2_scheme),
 
 @app.get("/trips/{trip_id}")
 async def get_trip_by_id(trip_id: int,
-                             # token: str = Depends(oauth2_scheme),
+                             token: str = Depends(oauth2_scheme),
                              db: Session = Depends(get_db)):
-    # current_user = utilities.decode_access_token(token)
-    # if not current_user:
-    #     raise HTTPException(status_code=401, detail="Not logged in")
+    current_user = utilities.decode_access_token(token)
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not logged in")
     
-    # user_id = current_user['user_id']
+    user_id = current_user['user_id']
     
-    user_id = 29  # mockup user, replace with user_id from JWT Token later
-    # Query to get the trip schedule by ID for the user
+    # user_id = 29  # mockup user, replace with user_id from JWT Token later
+    # Query to get the trip by ID for the user
     trip = db.query(Trip).filter(Trip.trip_id == trip_id, Trip.user_id == user_id).first()
     
     if not trip:
@@ -307,7 +307,7 @@ async def get_trip_by_id(trip_id: int,
     
     return trip
 """
-Add a new trip schedule endpoint.
+Add a new trip endpoint.
 Might be a good idea to integrate stops suggestion later in this section (?)
 """
 @app.post("/add-trip")
@@ -353,7 +353,7 @@ async def add_trips(new_trip: TripCreate,
     return {"message": "Trip added successfully", "trip_id": new_trip.trip_id}
 
 """
-Update a trip schedule endpoint.
+Update a trip endpoint.
 """
 @app.put("/update-trip/{trip_id}")
 async def update_trip(trip_id: int,
