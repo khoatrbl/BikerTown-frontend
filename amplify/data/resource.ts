@@ -6,9 +6,8 @@ and "delete" any "Todo" records.
 =========================================================================*/
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
-const schema = a.schema({
-  // Empty schema but properly formatted
-});
+const schema = a.schema({}); // Add your fields here
+// Empty schema but properly formatted
 
 export type Schema = ClientSchema<typeof schema>;
 
