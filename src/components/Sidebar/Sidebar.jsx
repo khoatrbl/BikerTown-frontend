@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/img/helmetlogo.jpg";
-import "./Sidebar.css"; 
+import "./Sidebar.css";
 
 const { Sider } = Layout;
 
@@ -39,9 +39,9 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
       disabled: !isLoggedIn,
     },
     {
-      key: "schedules",
+      key: "trips",
       icon: <EnvironmentOutlined />,
-      label: <Link to="/schedules">Schedules</Link>,
+      label: <Link to="/trips">Trips</Link>,
       disabled: !isLoggedIn,
     },
     {
@@ -71,7 +71,13 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
   ];
 
   return (
-    <Sider className="sidebar-sider" trigger={null} collapsible collapsed={collapsed} theme="light">
+    <Sider
+      className="sidebar-sider"
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      theme="light"
+    >
       <div className="sidebar-logo">
         <img src={logo} alt="Motorbike Riders Logo" />
       </div>
@@ -82,7 +88,7 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
         selectedKeys={[selectedKey]}
         items={menuItems}
       />
-      
+
       {isLoggedIn && (
         <div className={`sidebar-notification ${collapsed ? "hidden" : ""}`}>
           <div className="shake">

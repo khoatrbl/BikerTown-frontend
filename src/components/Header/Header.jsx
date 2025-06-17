@@ -1,10 +1,4 @@
-import {
-  Layout,
-  Button,
-  Dropdown,
-  Space,
-  Avatar,
-} from "antd";
+import { Layout, Button, Dropdown, Space, Avatar } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -23,7 +17,7 @@ const { Header: AntHeader } = Layout;
 const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
   const navigate = useNavigate();
   const [user1, setUser1] = useState(null);
-  
+
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -67,7 +61,10 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
         {isLoggedIn ? (
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <Space className="avatar-dropdown">
-              <Avatar style={{ backgroundColor: "#f5222d" }} icon={<UserOutlined />} />
+              <Avatar
+                style={{ backgroundColor: "#f5222d" }}
+                icon={<UserOutlined />}
+              />
               <span>{user1?.display_name || "User"}</span>
             </Space>
           </Dropdown>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Layout, ConfigProvider, theme } from "antd";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -21,7 +22,7 @@ const AppLayout = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
-        const token = JSON.parse(local).token;
+        const token = JSON.parse(storedUser).token;
         const response = axios.get("http://localhost:8000/validate-token", {
           headers: {
             Authorization: `Bearer ${token}`,
