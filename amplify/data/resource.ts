@@ -6,7 +6,14 @@ and "delete" any "Todo" records.
 =========================================================================*/
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
-const schema = a.schema({}); // Add your fields here
+const schema = a.schema({
+  Todo: a
+    .model({
+      content: a.string(),
+      isDone: a.boolean(), // Add your new field here
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+}); // Add your fields here
 // Empty schema but properly formatted
 
 export type Schema = ClientSchema<typeof schema>;
