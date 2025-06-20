@@ -11,9 +11,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  max-width: 1280px;
+  /* max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem; */
 
   --primary-color: #f5222d;
   --secondary-color: #001529;
@@ -21,6 +21,7 @@
 
 .card {
   padding: 2em;
+  justify-content: center;
 }
 
 .read-the-docs {
