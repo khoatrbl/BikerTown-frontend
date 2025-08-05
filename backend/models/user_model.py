@@ -3,10 +3,8 @@ from sqlalchemy.orm import relationship
 from database import Base
 
 class User(Base):
-    __tablename__ = "user"
-    user_id = Column(Integer, primary_key = True, index = True)
-    username = Column(String)
-    password = Column(String)
+    __tablename__ = "users"
+    uuid = Column(String, primary_key = True, index = True)
     display_name = Column(String)
     gender = Column(Boolean)
     dob = Column(Date)

@@ -6,7 +6,7 @@ from database import Base
 class UserContact(Base):
     __tablename__ = "user_contact"
     contact_id = Column(Integer, primary_key = True, index = True)
-    user_id = Column(Integer, ForeignKey("user.user_id"))
+    owner_uuid = Column(Integer, ForeignKey("users.uuid"))
     phone = Column(String)
     email = Column(String)
     address = Column(String)

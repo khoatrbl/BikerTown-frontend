@@ -1,10 +1,12 @@
-from datetime import date, datetime, time
+from datetime import datetime
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Form, HTTPException, requests, status
+from fastapi import Body, Depends, FastAPI, Form, HTTPException, status
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import case
 from sqlalchemy.orm import Session
+from schemas.update_trip_request import UpdateTripRequest
+from models.stop_model import Stop
+from models.trip_stops_model import TripStops
 from schemas.trip_create import TripCreate
 from database import Base, get_db, engine
 from models.trip_model import Trip
@@ -14,8 +16,10 @@ from schemas.user_contact_create import UserContactCreate
 from schemas.user_create import UserCreate
 from fastapi.middleware.cors import CORSMiddleware
 import utilities
-import bcrypt
-import os
+
+from utilities import verify_jwt_token
+
+from mangum import Mangum
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -39,76 +43,76 @@ app.add_middleware(
 # Create the tables in the database
 Base.metadata.create_all(bind=engine)
 
-# OAuth2PasswordBearer instance
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+@app.get("/user/{uuid}")
+async def get_user(uuid: str, db: Session = Depends(get_db)):
+    """
+    Retrieve user data from the database using UUID.
 
-"""
-Log in endpoint.
-"""
-@app.post("/login")
-async def login(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    # Find the matching user with the username given
-    user = db.query(User).filter(User.username == username).first()
+    Parameters:
+    - uuid (str): The UUID of the user to retrieve.
+    - db (Session): The database session dependency.
 
-    # If there is no match, return an error
-    if (user is None):
-        raise HTTPException(status_code=400, detail="Invalid username or password")
+    Returns:
+    - JSON: Object containing the user's display name if found.
 
-    #Encoding the passwords before feeding into bcrypt    
-    password = password.encode('utf-8')
-    encoded_user_password = user.password.encode('utf-8') 
+    Raises:
+    - HTTPException: 404 - If the user with the given UUID is not found
 
-    # Checking if the password matches the hashed password
-    if not (bcrypt.checkpw(password, encoded_user_password)):
-        raise HTTPException(status_code=400, detail="Invalid username or password")
+    """
 
-    data = {
-        "user_id": user.user_id,
-        "username": user.username,
-        "display_name": user.display_name
+    # Query the database for the user with the given UUID
+    user = db.query(User).filter(User.uuid == uuid).first()
+
+    # If no user found, raise an HTTPException
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Return the user data as a JSON response
+    return {
+        "display_name": user.display_name,
     }
 
-    access_token = utilities.create_access_token(data)
-
-    response = {
-        "message": f"Log in successful. Welcome {user.display_name}",
-        "user_id": f"{user.user_id}",
-        "username": f"{user.username}",
-        "display_name": f"{user.display_name}",
-        "token": access_token,
-        "token_type": "bearer"
-    }
-
-    return JSONResponse(content = response)
-
-"""
-Register endpoint.
-"""
-@app.post("/register")
-async def register(username: str = Form(...),
-             password: str = Form(...),
+@app.post("/register-user-data")
+async def register(uuid: str = Form(...),
+            email: str = Form(...),
              display_name: str = Form(...),
              gender: bool = Form(...),
              dob: str = Form(...),
              vehicle: str = Form(...),
              phone: str = Form(...),
-             email: str = Form(...),
              address: str = Form(...),
              district: str = Form(...),
              city: str = Form(...),
              db: Session = Depends(get_db)):
-    user = db.query(User.username).filter(User.username == username).first()
+    """
+    Register a new user object and user contact in the database with the user data provided.
 
-    # Check if the user has already existed on the database
-    if user:
-        raise HTTPException(status_code=400, detail="Username already exists.")
-    
-    # If not, create a hash for the new password, add it to the new user and insert the user onto the database
-    # Encode the password before feeding into bcrypt
-    password = password.encode('utf-8')
-    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
-    new_user = UserCreate(username=username, 
-                          password=hashed_password, 
+    Parameters:
+    - uuid (str): The UUID of the user to register.
+    - email (str): The email address of the user.
+    - display_name (str): The user's display name.
+    - gender (bool): The gender of the user.
+    - dob (str): The user's date of birth in 'YYYY-MM-DD' format.
+    - vehicle (str): The vehicle information of the user.
+    - phone (str): The user's phone number.
+    - address (str): The user's address.
+    - district (str): The district of the user's address.
+    - city (str): The city of the user's address.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSON: A message indicating successful registration.
+
+    Raises:
+    - HTTPException: 400 - If the user could not be added to the database.
+    - HTTPException: 400 - If the user contact could not be added to the database.
+    - HTTPException: 500 - If there is an error retrieving the latest user ID.
+
+    """
+
+    # Create a new user object with the obtained data
+    new_user = UserCreate(uuid=uuid, 
+                          email=email,
                           display_name=display_name, 
                           gender=gender, 
                           dob=datetime.strptime(dob, '%Y-%m-%d').date(), 
@@ -118,22 +122,22 @@ async def register(username: str = Form(...),
 
     # Check to see if there is any error during inserting the new user
     if (user_insert_result is None):
-        raise HTTPException(status_code=500, detail="Failed to add user.")
+        raise HTTPException(status_code=400, detail="Failed to add user.")
     
     # Get the latest user_id just added
-    latest_user_id = await utilities.get_latest_user_id(db)
-    latest_user_id = latest_user_id[0]
+    latest_uuid = await utilities.get_latest_uuid(db)
+    latest_uuid = latest_uuid[0]
     
     # Check to see if there is any error getting the latest user id
-    if latest_user_id is None:
+    if latest_uuid is None:
         raise HTTPException(status_code=500, detail="An error has occurred in retrieving data.")
     
     # If not, create a new user contact that corresponds to the new user
-    new_user_contact = UserContactCreate(user_id = latest_user_id, phone = phone, email = email, address = address, district = district, city = city)
+    new_user_contact = UserContactCreate( owner_uuid = latest_uuid, phone = phone, email = email, address = address, district = district, city = city)
     contact_insert_result = await utilities.insert_user_contact(new_user_contact, db)
 
     if contact_insert_result is None:
-        raise HTTPException(status_code=500, detail="Failed to add contact.")
+        raise HTTPException(status_code=400, detail="Failed to add contact.")
 
     return {
         "message": "Register successfully!",
@@ -141,9 +145,24 @@ async def register(username: str = Form(...),
     
 
 @app.get("/profile")
-async def get_profile(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    current_user = utilities.decode_access_token(token)
-    user_profile = db.query(User, UserContact).join(UserContact, User.user_id == UserContact.user_id).filter(User.username == current_user['username']).first()
+async def get_profile(payload = Depends(verify_jwt_token), db: Session = Depends(get_db)):
+    """
+    Retrieve the data of the user and return the data for the user profile.
+
+    Parameters:
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSON: Object containing user profile information
+
+    Raises:
+    - HTTPException: 404 - If the user or contact information is not found
+    
+    """
+
+    current_user = payload["username"]
+    user_profile = db.query(User, UserContact).join(UserContact, User.uuid == UserContact.owner_uuid).filter(User.uuid == current_user).first()
      # If no user or contact found, raise an HTTPException
     if user_profile is None:
         raise HTTPException(status_code=404, detail="User or contact information not found")
@@ -152,7 +171,6 @@ async def get_profile(token: str = Depends(oauth2_scheme), db: Session = Depends
     
     return {
         "user": {
-            "username": user.username,
             "display_name": user.display_name,
             "gender": user.gender,
             "dob": user.dob,
@@ -168,11 +186,8 @@ async def get_profile(token: str = Depends(oauth2_scheme), db: Session = Depends
         }
     }
 
-"""
-Update profile endpoint.
-"""
 @app.post("/update-profile")
-async def update_profile(token: str = Depends(oauth2_scheme),
+async def update_profile(payload = Depends(verify_jwt_token),
                          display_name: str = Form(...),
                          gender: bool = Form(...),
                          dob: str = Form(...),
@@ -183,8 +198,30 @@ async def update_profile(token: str = Depends(oauth2_scheme),
                          city: str = Form(...),
                          district: str = Form(...),
                          db: Session = Depends(get_db)):
-    current_user = utilities.decode_access_token(token)
-    user_profile = db.query(User, UserContact).join(UserContact, User.user_id == UserContact.user_id).filter(User.user_id == current_user["user_id"]).first()
+    """
+    Update an existing user's profile with the provided data.
+
+    Parameters:
+    - payload (dict): The decoded JWT token payload containing user information.
+    - display_name (str): The new display name for the user.
+    - gender (bool): The new gender of the user.
+    - dob (str): The new date of birth of the user in 'YYYY-MM-DD' format.
+    - vehicle (str): The new vehicle information of the user.
+    - email (str): The new email address of the user.
+    - phone (str): The new phone number of the user.
+    - address (str): The new address of the user.
+    - city (str): The new city of the user's address.
+    - district (str): The new district of the user's address.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSONResponse: A message indicating successful profile update.
+
+    Raises:
+    - HTTPException: 404 - If the user is not found.
+    """
+    current_user = payload["username"]
+    user_profile = db.query(User, UserContact).join(UserContact, User.uuid == UserContact.owner_uuid).filter(User.uuid == current_user).first()
 
     if not user_profile:
         raise HTTPException(status_code=404, detail="User not found")
@@ -217,65 +254,31 @@ async def update_profile(token: str = Depends(oauth2_scheme),
 
     return JSONResponse(content={"message": "Profile updated successfully."}, status_code=status.HTTP_200_OK)
 
-"""
-Update password endpoint.
-"""    
-@app.post("/update-password")
-async def update_password(token: str = Depends(oauth2_scheme), 
-                          current_pwd: str = Form(...), 
-                          new_pwd: str = Form(...), 
-                          cf_new_pwd: str = Form(...),
-                          db: Session = Depends(get_db)):
-    
-    current_user = utilities.decode_access_token(token)
-    user = db.query(User).filter(User.user_id == current_user['user_id']).first()
 
-    # If there is no match, return an error
-    if (user is None):
-        raise HTTPException(status_code=400, detail="Invalid username or password")
-    
-    if (new_pwd != cf_new_pwd):
-        raise HTTPException(status_code=400, detail="New passwords don't match!")
-    
-    encoded_current_pwd = current_pwd.encode('utf-8')
-    encoded_user_pwd = user.password.encode('utf-8')
-    encoded_new_pwd = new_pwd.encode('utf-8')
-
-    # Checking if the current password matches the hashed password
-    if not (bcrypt.checkpw(encoded_current_pwd, encoded_user_pwd)):
-        raise HTTPException(status_code=400, detail="Incorrect current password.")
-    
-    if (current_pwd == new_pwd):
-        raise HTTPException(status_code=400, detail="New password can not be the same as current password.")
-    
-    user.password = bcrypt.hashpw(encoded_new_pwd, bcrypt.gensalt()).decode('utf-8')
-    
-    db.commit()
-    db.refresh(user)
-
-    return {
-        "message": "Password is updated successfully!",
-    }
-
-"""
-Retrieve all trip info endpoint.
-"""
 @app.get("/trips")
-async def get_trips(token: str=Depends(oauth2_scheme),
+async def get_trips(payload=Depends(verify_jwt_token),
                         db: Session = Depends(get_db)):
-    # TODO: Replace with user_id from JWT Token later
-    # For now, using a mockup user_id for testing purposes
+    """
+    Retrieve all trips associate with the current user.
 
-    current_user = utilities.decode_access_token(token)
-    user_id = db.query(User.user_id).filter(User.user_id == current_user['user_id']).first()
+    Parameters:
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
 
-    if not user_id:
+    Returns:
+    - List[Trip]: A list of trips associated with the current user, ordered by trip status and trip ID.
+
+    Raises:
+    - HTTPException: 401 - If the user is not logged in.
+    """
+
+    current_user = payload["username"]
+
+    if not current_user:
         raise HTTPException(status_code=401, detail="Session expired.")
 
-    user_id = user_id[0]  # Extract the user_id from the tuple
-
     # Query to get all trips for the user, excluding finished trips
-    trips = db.query(Trip).join(User, Trip.user_id == User.user_id).filter(User.user_id == user_id).order_by(
+    trips = db.query(Trip).join(User, Trip.owner_uuid == User.uuid).filter(User.uuid == current_user).order_by(
         case(
                 (Trip.trip_status == "in_progress", 0),
                 (Trip.trip_status == "upcoming", 1),
@@ -290,38 +293,72 @@ async def get_trips(token: str=Depends(oauth2_scheme),
 
 @app.get("/trips/{trip_id}")
 async def get_trip_by_id(trip_id: int,
-                             token: str = Depends(oauth2_scheme),
+                             payload=Depends(verify_jwt_token),
                              db: Session = Depends(get_db)):
-    current_user = utilities.decode_access_token(token)
+    """
+    Retrieve info of trip by trip_id.
+
+    Parameters:
+    - trip_id (int): The ID of the trip to retrieve.
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSON: Object containing trip details and associated stops.
+
+    Raises:
+    - HTTPException: 401 - If the user is not logged in.
+    - HTTPException: 404 - If the trip is not found.
+    
+    """
+
+    current_user = payload["username"]
+    
     if not current_user:
         raise HTTPException(status_code=401, detail="Not logged in")
     
-    user_id = current_user['user_id']
-    
-    # user_id = 29  # mockup user, replace with user_id from JWT Token later
-    # Query to get the trip by ID for the user
-    trip = db.query(Trip).filter(Trip.trip_id == trip_id, Trip.user_id == user_id).first()
-    
+    trip = db.query(Trip).filter(Trip.trip_id == trip_id, Trip.owner_uuid == current_user).first()
+    stop_ids_of_trip = db.query(TripStops).filter(TripStops.trip_id == trip_id).order_by(TripStops.stop_order).all()
+    stops = []
+
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
+
+    if not stop_ids_of_trip:
+        print("stop is empty")
+        return {"trip": trip, "stops": []}
     
-    return trip
-"""
-Add a new trip endpoint.
-Might be a good idea to integrate stops suggestion later in this section (?)
-"""
+    for stop in stop_ids_of_trip:
+        stop_obj = db.query(Stop).filter(Stop.stop_id == stop.stop_id).first()
+        stops.append(stop_obj.stop_coordinates)
+
+
+    
+    return {"trip": trip, "stops": stops}
+
 @app.post("/add-trip")
 async def add_trips(new_trip: TripCreate,
-                       token: str = Depends(oauth2_scheme),
+                       payload = Depends(verify_jwt_token),
                       db: Session = Depends(get_db)):
-    
-    current_user = utilities.decode_access_token(token)
+    """
+    Add a new trip to the database.
+
+    Parameters:
+    - new_trip (TripCreate): The trip data to be added.
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSON: A message indicating successful trip addition and the trip ID.
+
+    Raises:
+    - HTTPException: 401 - If the user is not logged in.
+    - HTTPException: 404 - If the trip status is invalid.
+    """
+
+    current_user = payload["username"]
     if not current_user:
         raise HTTPException(status_code=401, detail="Not logged in")
-    
-    user_id = current_user['user_id']
-
-    # user_id = 29 # mockup user, replace with user_id from JWT Token later
 
     if new_trip.trip_status:
         if (new_trip.trip_status == "Upcoming"):
@@ -338,13 +375,16 @@ async def add_trips(new_trip: TripCreate,
             raise HTTPException(status_code=404, detail="Invalid status")
 
     # Create a new Trip instance
-    new_trip = Trip(start = new_trip.start,
+    new_trip = Trip(trip_name = new_trip.trip_name,
+                    start_coordinates = new_trip.start_coordinates,
+                    destination_coordinates = new_trip.destination_coordinates,
+                    start = new_trip.start,
                     destination = new_trip.destination,
                     start_date = new_trip.start_date,
                     end_date = new_trip.end_date,
                     time = new_trip.time,
                     trip_status = new_trip.trip_status,
-                    user_id = user_id)
+                    owner_uuid = current_user)
         
     db.add(new_trip)
     db.commit()
@@ -352,49 +392,143 @@ async def add_trips(new_trip: TripCreate,
 
     return {"message": "Trip added successfully", "trip_id": new_trip.trip_id}
 
-"""
-Update a trip endpoint.
-"""
-@app.put("/update-trip/{trip_id}")
-async def update_trip(trip_id: int,
-                        updated_trip: TripCreate,
-                        token: str = Depends(oauth2_scheme),
-                        db: Session = Depends(get_db)):
+@app.patch("/update-trip-name/{trip_id}")
+async def update_trip_name(trip_id: int,
+                           trip_name: str = Body(...),
+                           payload = Depends(verify_jwt_token),
+                           db: Session = Depends(get_db)):
     
-    current_user = utilities.decode_access_token(token)
+    """
+    Update the name of an existing trip.
+
+    Parameters: 
+    - trip_id (int): the id of the trip being renamed
+    - trip_name (str): the new name of the trip retrieved from the body of the request
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
+
+    Raises:
+    - HTTPException: 401 - If the user is not logged in.
+    - HTTPException: 404 - If the trip is not found or if the trip status is invalid.
+
+    """
+    
+    # Retrieve data on current user
+    current_user = payload["username"]
     if not current_user:
         raise HTTPException(status_code=401, detail="Not logged in")
     
-    # mockup user, replace with user_id from JWT Token later
-    user_id = current_user['user_id']
-
-    # user_id = 29  # mockup user, replace with user_id from JWT Token later
-    
-    # Find the trip by ID
+    # Find the trip by the trip ID
     trip = db.query(Trip).filter(Trip.trip_id == trip_id).first()
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
     
-    # Update the trip details
-    trip.start = updated_trip.start
-    trip.destination = updated_trip.destination
-    trip.start_date = updated_trip.start_date
-    trip.end_date = updated_trip.end_date
-    trip.time = updated_trip.time
-    if (updated_trip.trip_status == "Upcoming"):
-        trip.trip_status = "upcoming"
-    elif (updated_trip.trip_status == "Finished"):
-        trip.trip_status = "finished"   
-    elif (updated_trip.trip_status == "In Progress"):
-        trip.trip_status = "in_progress"    
-    elif(updated_trip.trip_status == "Cancelled"):
-        trip.trip_status = "cancelled"
-    elif(updated_trip.trip_status == "Delayed"):
-        trip.trip_status = "delayed"
-    else:
-        raise HTTPException(status_code=404, detail="Invalid status")
+    # Update the trip name
+    setattr(trip, "trip_name", trip_name)
+
+    db.commit()
+    db.refresh(trip)
+    
+
+@app.patch("/update-trip/{trip_id}")
+async def update_trip(trip_id: int,
+                        updated_trip: UpdateTripRequest,
+                        payload = Depends(verify_jwt_token),
+                        db: Session = Depends(get_db)):
+    """
+    Update an existing trip in the database with the provided data.
+
+    Parameters:
+    - trip_id (int): The ID of the trip to update.
+    - updated_trip (UpdatedTripRequest): The updated trip data & the new collection of stops.
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSON: A message indicating successful trip update and the trip ID.
+
+    Raises:
+    - HTTPException: 401 - If the user is not logged in.
+    - HTTPException: 404 - If the trip is not found or if the trip status is invalid.
+
+    """
+
+    # Retrieve data on current user
+    current_user = payload["username"]
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not logged in")
+
+    
+    # Find the trip by the trip ID
+    trip = db.query(Trip).filter(Trip.trip_id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    
+    # Retrieve the updated trip from the request
+    trip_to_update = updated_trip.updated_trip
+    
+    # Dump all data from updated trip
+    update_fields = trip_to_update.model_dump(exclude_unset=True)
+
+    # Loop through and update the fields as modified
+    for field, value in update_fields.items():
+        setattr(trip, field, value)
+
+    # Retrieve all the stops of the trip
+    stops = updated_trip.stops_of_trip
+
+    # Get all current tripstops for the trip
+    existing_tripstops = db.query(TripStops).filter(TripStops.trip_id == trip_id).all()
+
+    # Build set of incoming (trip_id, stop_order) pairs
+    incoming_orders = set((trip_id, stop.id) for stop in stops)
+
+    # Delete TripStops that are no longer in that set
+    for tripstop in existing_tripstops:
+        key = (tripstop.trip_id, tripstop.stop_order)
+        if key not in incoming_orders:
+            db.delete(tripstop)
+
+    for stop in stops:
+        # Check if stop existed 
+        exists = db.query(Stop).filter(Stop.stop_name == stop.stop_name, 
+                                               Stop.stop_coordinates == stop.stop_coordinates).first()
         
-    trip.user_id = user_id
+        # If not existed, add a new stop to Stop table
+        if not exists:
+            new_stop = Stop(stop_name = stop.stop_name, stop_coordinates = stop.stop_coordinates)
+            db.add(new_stop)
+            db.flush()
+        else:
+           continue
+    
+    
+    # Loop through all the stops of the trip
+    for stop in stops:
+        # Query the stop_id of the stop where stop name and coordinates matches the data
+        stop_id = db.query(Stop.stop_id).filter(Stop.stop_name == stop.stop_name, 
+                                                Stop.stop_coordinates == stop.stop_coordinates).scalar()
+
+        # Check if this exact trip_id and stop_order already exist
+        existing_by_order = db.query(TripStops).filter(
+            TripStops.trip_id == trip_id,
+            TripStops.stop_order == stop.id
+        ).first()
+
+        if existing_by_order:
+            # Update it to the current stop_id if it's different
+            if existing_by_order.stop_id != stop_id:
+                existing_by_order.stop_id = stop_id
+            continue
+
+        # Else, insert a new row — allows reuse of stop_id at new stop_order
+        new_trip_stop = TripStops(
+            stop_id=stop_id,
+            trip_id=trip_id,
+            stop_order=stop.id
+        )
+        db.add(new_trip_stop)
+
     # Commit the changes to the database
     db.commit()
     db.refresh(trip)  # Refresh the trip instance to get updated data
@@ -402,87 +536,55 @@ async def update_trip(trip_id: int,
 
 @app.delete("/delete-trip/{trip_id}")
 async def delete_trip(trip_id: int,
-                        token: str = Depends(oauth2_scheme),
+                        payload = Depends(verify_jwt_token),
                         db: Session = Depends(get_db)):
     
-    current_user = utilities.decode_access_token(token)
+    """
+    Delete a trip by trip_id.
+
+    Parameters:
+    - trip_id (int): The ID of the trip to delete.
+    - payload (dict): The decoded JWT token payload containing user information.
+    - db (Session): The database session dependency.
+
+    Returns:
+    - JSON: A message indicating successful trip deletion.
+
+    Raises:
+    - HTTPException: 401 - If the user is not logged in.
+    - HTTPException: 404 - If the trip is not found.
+
+    """
+    
+    current_user = payload["username"]
     if not current_user:
         raise HTTPException(status_code=401, detail="Not logged in")
     
-    user_id = current_user['user_id']
-
-    # user_id = 29  # mockup user, replace with user_id from JWT Token later
-    
     # Find the trip by ID
-    trip = db.query(Trip).filter(Trip.trip_id == trip_id, Trip.user_id == user_id).first()
+    trip = db.query(Trip).filter(Trip.trip_id == trip_id, Trip.owner_uuid == current_user).first()
+    tripStops = db.query(TripStops).filter(TripStops.trip_id == trip_id).first()
+
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
     
     # Delete the trip
     db.delete(trip)
+
+    if tripStops is not None:
+        db.delete(tripStops) # delete associating trip stops
+
     db.commit()
     
     return {"message": "Trip deleted successfully"}
-# """Validate a token."""
-@app.get("/validate-token")
-async def validate_token(token: str = Depends(oauth2_scheme)):
-    current_user = utilities.decode_access_token(token)
-
-    if not current_user:
-        raise HTTPException(status_code=401, detail="Not logged in")   
 
 
-"""
-Test endpoint to check the app is working
-"""
 @app.get("/")
 def fastapi_test():
+    """
+    Test endpoint to check the app is working"""
     return {
         "message":"Fastapi working."
     }
     
-
-############# MOCK UP SECTION #############
-"""
-Simulate a login endpoint to provide a token (not for production, only mockup)
-"""
-@app.post("/token")
-async def login_for_access_token(username: str = Form(...), password: str = Form(...)):
-    # Fake authentication for demonstration purposes
-    if username == "admin" and password == "admin":
-        # Create JWT token with user data
-        payload = {"sub": username}
-
-        token = utilities.create_access_token(payload)
-        return {"access_token": token, "token_type": "bearer"}
-    raise HTTPException(status_code=400, detail="Invalid credentials")
-
-"""
-Simulate retrieving profile after logged in with JWT verification
-"""
-@app.get("/mock-profile")
-async def get_mock_profile(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user_profile = db.query(User, UserContact).join(UserContact, User.user_id == UserContact.user_id).filter(User.username == "admin").first()
-     # If no user or contact found, raise an HTTPException
-    if user_profile is None:
-        raise HTTPException(status_code=404, detail="User or contact information not found")
-    
-    user, user_contact = user_profile
-    
-    return {
-        "user": {
-            "username": user.username,
-            "display_name": user.display_name,
-            "gender": user.gender,
-            "dob": user.dob,
-            "vehicle": user.vehicle,
-            "created_date": user.created_date
-        },
-        "user_contact": {
-            "phone": user_contact.phone,
-            "email": user_contact.email,
-            "address": user_contact.address,
-            "district": user_contact.district,
-            "city": user_contact.city
-        }
-    }
+# This is the Lambda handler
+handler = Mangum(app)

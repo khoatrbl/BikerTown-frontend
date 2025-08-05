@@ -12,6 +12,9 @@ class TripStatusEnum(str, Enum):
 
 class TripCreate(BaseModel):
     trip_id: Optional[int] = None
+    trip_name: str
+    start_coordinates: Optional[list[float]] = None
+    destination_coordinates: Optional[list[float]] = None
     start: str
     destination: str
     start_date: date

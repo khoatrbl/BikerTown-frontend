@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class UserCreate(BaseModel):
-    username: str
-    password: str
+    uuid: str
+    email: str
     display_name: str
     gender: bool
     dob: date

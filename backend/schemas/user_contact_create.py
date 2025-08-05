@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class UserContactCreate(BaseModel):
-    user_id: int
+    owner_uuid: str
     phone: str
     email: str # replace later with email validator
     address: str
