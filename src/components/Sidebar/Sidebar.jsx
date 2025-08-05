@@ -33,12 +33,6 @@ const Sidebar = ({ collapsed, isLoggedIn }) => {
       disabled: false,
     },
     {
-      key: "meeting",
-      icon: <VideoCameraOutlined />,
-      label: <Link to="/meeting">Meeting</Link>,
-      disabled: !isLoggedIn,
-    },
-    {
       key: "trips",
       icon: <EnvironmentOutlined />,
       label: <Link to="/trips">Trips</Link>,

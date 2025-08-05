@@ -13,12 +13,12 @@ Amplify.configure(outputs);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Authenticator>
-      <ConfigProvider>
-        <AntdApp>
-          <App />
-        </AntdApp>
-      </ConfigProvider>
-    </Authenticator>
+    {/* <Authenticator> */}
+    <ConfigProvider>
+      <AntdApp>
+        <App />
+      </AntdApp>
+    </ConfigProvider>
+    {/* </Authenticator> */}
   </React.StrictMode>
 );

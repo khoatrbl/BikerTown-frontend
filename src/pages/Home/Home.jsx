@@ -123,7 +123,9 @@ const Home = () => {
                 >
                   Join Now
                 </Button>
-                <Button size="large" onClick={() => navigate("/todo")}>Learn More</Button>
+                <Button size="large" onClick={() => navigate("/todo")}>
+                  Learn More
+                </Button>
               </Space>
             </div>
           </div>
@@ -164,7 +166,11 @@ const Home = () => {
                 Create detailed trip plans and share them with your riding
                 buddies
               </Paragraph>
-              <Button type="primary" size="large" onClick={() => navigate("/todo")}>
+              <Button
+                type="primary"
+                size="large"
+                onClick={() => navigate("/todo")}
+              >
                 Start Planning
               </Button>
             </div>
@@ -207,7 +213,11 @@ const Home = () => {
                 Your journeys start here, your stories start here
               </Paragraph>
               <Space>
-                <Button type="primary" size="large" onClick={() => navigate("/todo")}>
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={() => navigate("/todo")}
+                >
                   Join Us
                 </Button>
               </Space>
@@ -234,7 +244,11 @@ const Home = () => {
                   />
                 }
                 actions={[
-                  <Button type="link" key="explore" onClick={() => navigate("/todo")}>
+                  <Button
+                    type="link"
+                    key="explore"
+                    onClick={() => navigate("/todo")}
+                  >
                     Explore <RightOutlined />
                   </Button>,
                 ]}
@@ -307,24 +321,24 @@ const Home = () => {
         }}
       >
         <Title
-  level={2}
-  style={{
-    textAlign: "center",
-    marginBottom: 40,
-  }}
->
-  <span
-    style={{
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      color: "yellow",
-      padding: "10px",
-      borderRadius: "8px",
-      display: "inline-block",
-    }}
-  >
-    What Our Riders Say
-  </span>
-</Title>
+          level={2}
+          style={{
+            textAlign: "center",
+            marginBottom: 40,
+          }}
+        >
+          <span
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              color: "yellow",
+              padding: "10px",
+              borderRadius: "8px",
+              display: "inline-block",
+            }}
+          >
+            What Our Riders Say
+          </span>
+        </Title>
 
         <Row gutter={[24, 24]} justify="center">
           <Col xs={24} sm={20} md={16} lg={12}>

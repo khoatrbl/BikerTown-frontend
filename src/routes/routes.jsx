@@ -11,8 +11,16 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Profile from "../pages/Profile/Profile";
 import Room from "../pages/Room/Room";
-import Slider from "../pages/Home/Slider";
+import ConfirmRegister from "../pages/Register/ConfirmRegister";
 import TripDetail from "../pages/TripDetail/TripDetail";
+import { Authenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+
+function ProtectedRoute({ children }) {
+  return (
+    <Authenticator>{({ user }) => (user ? children : null)}</Authenticator>
+  );
+}
 
 const AppRoutes = () => {
   return (
@@ -20,7 +28,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
-          <Route path="slider" element={<Slider />} />
+          {/* <Route path="slider" element={<Slider />} /> */}
 
           {/* <Route index element={<Slider />} />
           <Route path="home" element= {<Home />}/> */}
@@ -29,16 +37,80 @@ const AppRoutes = () => {
 
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="confirm-register" element={<ConfirmRegister />} />
 
-          <Route path="profile" element={<Profile />} />
-          <Route path="meeting" element={<Meeting />} />
-          <Route path="room" element={<Room />} />
-          <Route path="trips" element={<Trips />} />
-          <Route path="todo" element={<Todo />} />
-          <Route path="history" element={<History />} />
-          <Route path="friends" element={<Friends />} />
-          <Route path="messages" element={<Messages />} />
-          <Route path="/trips/:trip_id" element={<TripDetail />} />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="meeting"
+            element={
+              <ProtectedRoute>
+                <Meeting />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="room"
+            element={
+              <ProtectedRoute>
+                <Room />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="trips"
+            element={
+              <ProtectedRoute>
+                <Trips />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="todo"
+            element={
+              <ProtectedRoute>
+                <Todo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="history"
+            element={
+              <ProtectedRoute>
+                <History />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="friends"
+            element={
+              <ProtectedRoute>
+                <Friends />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="messages"
+            element={
+              <ProtectedRoute>
+                <Messages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trips/:trip_id"
+            element={
+              <ProtectedRoute>
+                <TripDetail />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

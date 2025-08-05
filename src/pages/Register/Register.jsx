@@ -1,9 +1,10 @@
 import { Form, Input, Button, Select, DatePicker, App } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import vietnamData from "../../Data/VietnamCitiesData.json";
+import { useAuth } from "../../contexts/AuthContext";
+import { signUp } from "@aws-amplify/auth";
 
 const { Option } = Select;
 
@@ -13,31 +14,65 @@ const Register = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const { message } = App.useApp();
 
+  const { isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
+
   const handleRegisterSubmit = async (values) => {
+    // setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("username", values.username);
-      formData.append("password", values.password);
+
+      formData.append("email", values.email);
       formData.append("display_name", values.display_name);
       formData.append("gender", values.gender);
       formData.append("dob", values.dob.format("YYYY-MM-DD"));
       formData.append("vehicle", values.vehicle);
       formData.append("phone", values.phone);
-      formData.append("email", values.email);
       formData.append("address", values.address);
       formData.append("district", values.district);
       formData.append("city", values.city);
 
-      // Submit to your backend
-      await axios.post("http://localhost:8000/register", formData); // replace URL as needed
+      const register = async () => {
+        const response = await signUp({
+          username: values.email,
+          password: values.password,
+          attributes: {
+            email: values.email,
+          },
+        });
 
-      message.success("Registration successful! Please login.");
+        return response;
+      };
+
+      const response = await register();
+      const userInfo = {};
+
+      formData.forEach((value, key) => {
+        userInfo[key] = value;
+      });
+
+      // Submit to your backend
+      // await axios.post("http://localhost:8000/register", formData); // replace URL as needed
+
       form.resetFields();
-      navigate("/login");
+      navigate("/confirm-register", {
+        state: {
+          fromRegister: true,
+          signUpResponse: response,
+          userInfo,
+        },
+      });
     } catch (error) {
       message.error("Registration failed. Please try again.");
       console.error(error);
     }
+
+    message.success("Registration successful!");
   };
 
   return (
@@ -46,18 +81,50 @@ const Register = () => {
         <h2>Register</h2>
         <Form form={form} layout="vertical" onFinish={handleRegisterSubmit}>
           <Form.Item
-            name="username"
-            label="Username"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            name="email"
+            label="Email"
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email!" },
+            ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            name="display_name"
-            label="Full Name"
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="confirmPassword"
+            label="Confirm Password"
+            dependencies={["password"]}
             rules={[
-              { required: true, message: "Please input your full name!" },
+              { required: true, message: "Please confirm your password!" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The two passwords do not match!")
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="display_name"
+            label="Display Name"
+            rules={[
+              { required: true, message: "Please input your display name!" },
             ]}
           >
             <Input />
@@ -100,46 +167,6 @@ const Register = () => {
             ]}
           >
             <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[
-              { required: true, message: "Please input your email!" },
-              { type: "email", message: "Please enter a valid email!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            name="confirmPassword"
-            label="Confirm Password"
-            dependencies={["password"]}
-            rules={[
-              { required: true, message: "Please confirm your password!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("The two passwords do not match!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
           </Form.Item>
 
           <Form.Item

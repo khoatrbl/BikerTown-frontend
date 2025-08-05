@@ -36,6 +36,7 @@ import axios from "axios";
 import HamsterLoading from "../../components/Loading/HamsterLoading";
 
 import { useNavigate } from "react-router-dom";
+import { fetchAuthSession, updatePassword } from "aws-amplify/auth";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -50,57 +51,58 @@ const Profile = () => {
   const { message } = App.useApp();
   const navigate = useNavigate();
 
+  const fetchUserData = async () => {
+    try {
+      setLoading(true); // Optional: show loading while fetching
+
+      // const local = localStorage.getItem("user");
+      // const token = JSON.parse(local).token;
+
+      const session = await fetchAuthSession();
+      const accessToken = session.tokens.accessToken.toString();
+
+      const response = await axios.get("http://localhost:8000/profile", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const userData = response.data;
+      setUserData(userData);
+
+      // Set form values using real data
+      form.setFieldsValue({
+        display_name: userData.user.display_name,
+        gender: userData.user.gender,
+        dob: dayjs(userData.user.dob),
+        vehicle: userData.user.vehicle,
+        phone: userData.user_contact.phone,
+        email: userData.user_contact.email,
+        address: userData.user_contact.address,
+        district: userData.user_contact.district,
+        city: userData.user_contact.city,
+      });
+
+      // Update selectedCity state so that district list matches the saved city
+      setSelectedCity(userData.user_contact.city);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+
+      if (error.response && error.response.status == 401) {
+        console.log("Token is invalid.");
+        message.error("Session expired");
+        navigate("/login");
+      }
+
+      setTimeout(() => {
+        message.error("Failed to load profile data");
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   // Fetch user data from API
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true); // Optional: show loading while fetching
-
-        const local = localStorage.getItem("user");
-        const token = JSON.parse(local).token;
-
-        const response = await axios.get("http://localhost:8000/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const userData = response.data;
-        setUserData(userData);
-
-        // Set form values using real data
-        form.setFieldsValue({
-          username: userData.user.username,
-          display_name: userData.user.display_name,
-          gender: userData.user.gender,
-          dob: dayjs(userData.user.dob),
-          vehicle: userData.user.vehicle,
-          phone: userData.user_contact.phone,
-          email: userData.user_contact.email,
-          address: userData.user_contact.address,
-          district: userData.user_contact.district,
-          city: userData.user_contact.city,
-        });
-
-        // Update selectedCity state so that district list matches the saved city
-        setSelectedCity(userData.user_contact.city);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-
-        if (error.response && error.response.status == 401) {
-          console.log("Token is invalid.");
-          message.error("Session expired");
-          navigate("/login");
-        }
-
-        setTimeout(() => {
-          message.error("Failed to load profile data");
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserData();
   }, [form, message, navigate]);
 
@@ -110,7 +112,6 @@ const Profile = () => {
 
   const handleCancel = () => {
     form.setFieldsValue({
-      username: userData.user.username,
       display_name: userData.user.display_name,
       gender: userData.user.gender,
       dob: dayjs(userData.user.dob),
@@ -125,9 +126,6 @@ const Profile = () => {
   };
 
   const handleSubmit = async (values) => {
-    // In a real app, you would send this data to your API
-    console.log("Updated profile data:", values);
-
     const formData = new FormData();
     formData.append("display_name", values.display_name);
     formData.append("gender", values.gender);
@@ -139,17 +137,17 @@ const Profile = () => {
     formData.append("district", values.district);
     formData.append("city", values.city);
 
-    const local = localStorage.getItem("user");
-    const token = JSON.parse(local).token;
-
     try {
+      const session = await fetchAuthSession();
+      const accessToken = session.tokens.accessToken.toString();
+
       const response = await axios.post(
         "http://localhost:8000/update-profile",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data", // Set the correct header
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -157,29 +155,7 @@ const Profile = () => {
       // Handle the response
       if (response.status === 200) {
         // Update client view with updated data
-        const response = await axios.get("http://localhost:8000/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const userData = response.data;
-        setUserData(userData);
-
-        // Set form values using real data
-        form.setFieldsValue({
-          username: userData.user.username,
-          display_name: userData.user.display_name,
-          gender: userData.user.gender,
-          dob: dayjs(userData.user.dob),
-          vehicle: userData.user.vehicle,
-          phone: userData.user_contact.phone,
-          email: userData.user_contact.email,
-          address: userData.user_contact.address,
-          district: userData.user_contact.district,
-          city: userData.user_contact.city,
-        });
-
+        fetchUserData();
         setIsEditing(false);
         message.success("Profile updated successfully!");
       }
@@ -196,41 +172,22 @@ const Profile = () => {
 
   // Handle password change
   const handlePasswordChange = async (values) => {
-    // In a real app, you would send this data to your API
-    const local = localStorage.getItem("user");
-    const token = JSON.parse(local).token;
-
     const formData = new FormData();
     formData.append("current_pwd", values.currentPassword);
     formData.append("new_pwd", values.newPassword);
-    formData.append("cf_new_pwd", values.confirmPassword);
 
     try {
-      const res = await axios.post(
-        "http://localhost:8000/update-password",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Set the correct header
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await updatePassword({
+        oldPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      });
 
-      if (res.status === 200) {
-        message.success("Password changed successfully!");
-        passwordForm.resetFields();
-      }
+      message.success("Password changed successfully!");
+      passwordForm.resetFields();
     } catch (error) {
       // Handle the error
       console.error("Error:", error);
-      if (error.response) {
-        message.error(
-          `Server responded with error: ${error.response.status} - ${error.response.data.detail}`
-        );
-      } else {
-        message.error(`Server is irreponsive.`);
-      }
+      message.error("Failed to change password. Please try again.");
     }
   };
 
@@ -318,7 +275,6 @@ const Profile = () => {
                       onFinish={handleSubmit}
                       disabled={!isEditing}
                       initialValues={{
-                        username: userData.user.username,
                         display_name: userData.user.display_name,
                         gender: userData.user.gender,
                         dob: dayjs(userData.user.dob),
@@ -337,7 +293,7 @@ const Profile = () => {
                         User Information
                       </Divider>
                       <Row gutter={16}>
-                        <Col xs={24} md={12}>
+                        {/* <Col xs={24} md={12}>
                           <Form.Item
                             name="username"
                             label="Username"
@@ -354,7 +310,7 @@ const Profile = () => {
                               disabled
                             />
                           </Form.Item>
-                        </Col>
+                        </Col> */}
                         <Col xs={24} md={12}>
                           <Form.Item
                             name="display_name"
@@ -583,6 +539,10 @@ const Profile = () => {
                         {
                           min: 6,
                           message: "Password must be at least 6 characters",
+                        },
+                        {
+                          pattern: /[!@#$%^&*(),.?":{}|<>]/,
+                          message: "Password must contain at least one symbol",
                         },
                       ]}
                     >

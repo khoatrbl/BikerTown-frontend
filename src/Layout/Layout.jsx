@@ -1,75 +1,82 @@
 import { useState, useEffect } from "react";
 import { Layout, ConfigProvider, theme } from "antd";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Sidebar from "../components/Sidebar/Sidebar";
 import "./Layout.css";
+import { AuthContext } from "../contexts/AuthContext";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 const { Content } = Layout;
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  // const [user, setUser] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
 
   // Check login state on location changes
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const token = JSON.parse(storedUser).token;
-        const response = axios.get("http://localhost:8000/validate-token", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    const checkLoginState = async () => {
+      const authSession = await fetchAuthSession();
+      const storedUser = authSession.tokens.accessToken.toString();
 
-        setIsLoggedIn(true);
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      if (storedUser) {
+        try {
+          setIsLoggedIn(true);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
 
-        if (error.response && error.response.status == 401) {
-          console.log("Token is invalid.");
-          message.error("Session expired");
-          navigate("/login");
+          if (error.response && error.response.status == 401) {
+            console.log("Token is invalid.");
+            message.error("Session expired");
+            navigate("/login");
+          }
+        }
+      } else {
+        setIsLoggedIn(false);
+
+        const protectedRoutes = [
+          "/schedules",
+          "/todo",
+          "/history",
+          "/friends",
+          "/messages",
+          "/profile",
+          "/meeting",
+          "/room",
+          "/home",
+        ];
+
+        if (protectedRoutes.includes(location.pathname)) {
+          navigate("/", { replace: true });
         }
       }
+    };
+
+    checkLoginState();
+
+    if (/^\/trips\/\d+/.test(location.pathname)) {
+      setCollapsed(true);
     } else {
-      setIsLoggedIn(false);
-      setUser(null);
-      const protectedRoutes = [
-        "/schedules",
-        "/todo",
-        "/history",
-        "/friends",
-        "/messages",
-        "/profile",
-        "/meeting",
-        "/room",
-        "/home",
-      ];
-      if (protectedRoutes.includes(location.pathname)) {
-        navigate("/login");
-      }
+      setCollapsed(false);
     }
   }, [location.pathname, navigate]);
 
   // Listen for custom login/logout events to update state immediately
   useEffect(() => {
-    const handleUserChange = () => {
-      const storedUser = localStorage.getItem("user");
+    const handleUserChange = async () => {
+      const authSession = await fetchAuthSession();
+      const storedUser = authSession.tokens.accessToken.toString();
+
       if (storedUser) {
         setIsLoggedIn(true);
-        setUser(JSON.parse(storedUser));
       } else {
         setIsLoggedIn(false);
-        setUser(null);
       }
     };
 
@@ -82,49 +89,52 @@ const AppLayout = () => {
     };
   }, [location.pathname, navigate]);
 
+  useEffect(() => {}, [location.pathname]);
+
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    window.dispatchEvent(new Event("user-logout")); // Notify layout immediately
     setIsLoggedIn(false);
-    setUser(null);
-    navigate("/");
+
+    window.dispatchEvent(new Event("user-logout")); // Notify layout immediately
+    navigate("/", { replace: true });
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.defaultAlgorithm,
-        token: {
-          colorPrimary: "#f5222d",
-          borderRadius: 6,
-        },
-      }}
-    >
-      <Layout className="full-height-layout">
-        {isLoggedIn && (
-          <Sidebar collapsed={collapsed} isLoggedIn={isLoggedIn} />
-        )}
-        <Layout>
-          <Header
-            isLoggedIn={isLoggedIn}
-            toggleSidebar={toggleSidebar}
-            onLogout={handleLogout}
-            collapsed={collapsed}
-            user={user}
-          />
-          <Layout className="inner-layout">
-            <Content className="content-style">
-              <Outlet />
-            </Content>
+    <AuthContext.Provider value={{ isLoggedIn }}>
+      <ConfigProvider
+        theme={{
+          algorithm: theme.defaultAlgorithm,
+          token: {
+            colorPrimary: "#f5222d",
+            borderRadius: 6,
+          },
+        }}
+      >
+        <Layout className="full-height-layout">
+          {isLoggedIn && (
+            <Sidebar collapsed={collapsed} isLoggedIn={isLoggedIn} />
+          )}
+          <Layout>
+            <Header
+              isLoggedIn={isLoggedIn}
+              toggleSidebar={toggleSidebar}
+              onLogout={handleLogout}
+              collapsed={collapsed}
+              // user={user}
+            />
+            <Layout className="inner-layout">
+              <Content className="content-style">
+                <Outlet />
+              </Content>
+            </Layout>
+            <Footer />
           </Layout>
-          <Footer />
         </Layout>
-      </Layout>
-    </ConfigProvider>
+      </ConfigProvider>
+    </AuthContext.Provider>
   );
 };
 

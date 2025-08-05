@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Typography,
   Row,
@@ -14,7 +14,7 @@ import {
   TimePicker,
   Divider,
   Empty,
-} from "antd"
+} from "antd";
 import {
   VideoCameraOutlined,
   UserOutlined,
@@ -22,15 +22,17 @@ import {
   ClockCircleOutlined,
   EnvironmentOutlined,
   PlusOutlined,
-} from "@ant-design/icons"
-import "./Meeting.css"
+} from "@ant-design/icons";
+import "./Meeting.css";
+import { useEffect } from "react";
+import axios from "axios";
 
-const { Title, Paragraph } = Typography
-const { TextArea } = Input
+const { Title, Paragraph } = Typography;
+const { TextArea } = Input;
 
 const Meeting = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [form] = Form.useForm()
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
   const [meetings, setMeetings] = useState([
     {
@@ -39,7 +41,8 @@ const Meeting = () => {
       date: "June 15, 2023",
       time: "19:00",
       location: "Online",
-      description: "Discuss and plan our upcoming weekend ride to the mountains.",
+      description:
+        "Discuss and plan our upcoming weekend ride to the mountains.",
       participants: 8,
       host: "Mike Johnson",
     },
@@ -49,7 +52,8 @@ const Meeting = () => {
       date: "June 20, 2023",
       time: "18:30",
       location: "Online",
-      description: "Learn basic motorcycle maintenance tips from our expert mechanics.",
+      description:
+        "Learn basic motorcycle maintenance tips from our expert mechanics.",
       participants: 15,
       host: "Sarah Miller",
     },
@@ -63,16 +67,33 @@ const Meeting = () => {
       participants: 12,
       host: "David Thompson",
     },
-  ])
+  ]);
+
+  useEffect(() => {
+    const test = async () => {
+      const res = await axios.get("http://localhost:8000/protected/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("CognitoIdentityServiceProvider.49vvifb12b9vn6danpn4su4f2i.199eb4f8-d0b1-707b-e8c4-f95ae1cacad0.accessToken")}`,
+        },
+      });
+
+      if (res.status === 200) {
+        console.log("Protected route accessed successfully");
+      } else {
+        console.log("Failed to access protected route");
+      }
+    };
+    test();
+  }, []);
 
   const showModal = () => {
-    setIsModalVisible(true)
-  }
+    setIsModalVisible(true);
+  };
 
   const handleCancel = () => {
-    setIsModalVisible(false)
-    form.resetFields()
-  }
+    setIsModalVisible(false);
+    form.resetFields();
+  };
 
   const handleCreateMeeting = (values) => {
     const newMeeting = {
@@ -84,20 +105,22 @@ const Meeting = () => {
       description: values.description,
       participants: 0,
       host: "You",
-    }
+    };
 
-    setMeetings([...meetings, newMeeting])
-    setIsModalVisible(false)
-    form.resetFields()
-  }
+    setMeetings([...meetings, newMeeting]);
+    setIsModalVisible(false);
+    form.resetFields();
+  };
 
   const handleJoinMeeting = (id) => {
     setMeetings(
       meetings.map((meeting) =>
-        meeting.id === id ? { ...meeting, participants: meeting.participants + 1 } : meeting
+        meeting.id === id
+          ? { ...meeting, participants: meeting.participants + 1 }
+          : meeting
       )
-    )
-  }
+    );
+  };
 
   return (
     <div className="meeting-container">
@@ -109,7 +132,8 @@ const Meeting = () => {
       </div>
 
       <Paragraph className="meeting-description">
-        Join online meetings with fellow riders to plan trips, discuss routes, and share experiences.
+        Join online meetings with fellow riders to plan trips, discuss routes,
+        and share experiences.
       </Paragraph>
 
       {meetings.length > 0 ? (
@@ -120,12 +144,20 @@ const Meeting = () => {
                 hoverable
                 className="meeting-card"
                 actions={[
-                  <Button key="join" type="primary" onClick={() => handleJoinMeeting(meeting.id)}>
+                  <Button
+                    key="join"
+                    type="primary"
+                    onClick={() => handleJoinMeeting(meeting.id)}
+                  >
                     Join Meeting
                   </Button>,
                 ]}
               >
-                <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+                <Space
+                  direction="vertical"
+                  size="middle"
+                  style={{ width: "100%" }}
+                >
                   <div className="meeting-title">
                     <VideoCameraOutlined className="meeting-icon" />
                     <Title level={4} style={{ margin: 0 }}>
@@ -153,7 +185,9 @@ const Meeting = () => {
                   </Space>
 
                   <Divider style={{ margin: "12px 0" }} />
-                  <Paragraph ellipsis={{ rows: 2 }}>{meeting.description}</Paragraph>
+                  <Paragraph ellipsis={{ rows: 2 }}>
+                    {meeting.description}
+                  </Paragraph>
                   <Tag color="blue">{meeting.participants} participants</Tag>
                 </Space>
               </Card>
@@ -161,24 +195,42 @@ const Meeting = () => {
           ))}
         </Row>
       ) : (
-        <Empty description="No meetings scheduled" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <Empty
+          description="No meetings scheduled"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
       )}
 
-      <Modal title="Create New Meeting" open={isModalVisible} onCancel={handleCancel} footer={null}>
+      <Modal
+        title="Create New Meeting"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
         <Form form={form} layout="vertical" onFinish={handleCreateMeeting}>
           <Form.Item
             name="title"
             label="Meeting Title"
-            rules={[{ required: true, message: "Please enter a meeting title" }]}
+            rules={[
+              { required: true, message: "Please enter a meeting title" },
+            ]}
           >
             <Input placeholder="e.g., Weekly Ride Planning" />
           </Form.Item>
 
-          <Form.Item name="date" label="Date" rules={[{ required: true, message: "Please select a date" }]}>
+          <Form.Item
+            name="date"
+            label="Date"
+            rules={[{ required: true, message: "Please select a date" }]}
+          >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item name="time" label="Time" rules={[{ required: true, message: "Please select a time" }]}>
+          <Form.Item
+            name="time"
+            label="Time"
+            rules={[{ required: true, message: "Please select a time" }]}
+          >
             <TimePicker format="HH:mm" style={{ width: "100%" }} />
           </Form.Item>
 
@@ -198,7 +250,7 @@ const Meeting = () => {
         </Form>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default Meeting
+export default Meeting;
