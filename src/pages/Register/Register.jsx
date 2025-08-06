@@ -50,6 +50,9 @@ const Register = () => {
       };
 
       const response = await register();
+
+      console.log("res:", response);
+
       const userInfo = {};
 
       formData.forEach((value, key) => {
@@ -67,12 +70,12 @@ const Register = () => {
           userInfo,
         },
       });
+
+      message.success("Registration successful!");
     } catch (error) {
-      message.error("Registration failed. Please try again.");
+      message.error("Registration failed. User already exists.");
       console.error(error);
     }
-
-    message.success("Registration successful!");
   };
 
   return (
