@@ -13,6 +13,7 @@ import Profile from "../pages/Profile/Profile";
 import Room from "../pages/Room/Room";
 import ConfirmRegister from "../pages/Register/ConfirmRegister";
 import TripDetail from "../pages/TripDetail/TripDetail";
+
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 
