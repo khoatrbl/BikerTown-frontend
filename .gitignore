@@ -23,7 +23,7 @@ venv/
 node_modules
 
 # amplify
-# .amplify
+.amplify
 # amplify/
 # amplify_outputs.json
 amplifyconfiguration*
