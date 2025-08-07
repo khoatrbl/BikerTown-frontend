@@ -1,0 +1,295 @@
+{
+  "version": "41.0.0",
+  "artifacts": {
+    "amplify-bikertown-hp-sandbox-3a49fa8bba.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "amplify-bikertown-hp-sandbox-3a49fa8bba.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "amplify-bikertown-hp-sandbox-3a49fa8bba": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "amplify-bikertown-hp-sandbox-3a49fa8bba.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "amplify:deployment-type": "sandbox",
+          "created-by": "amplify"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6e84bfc7c10a9181f0a7a7e950135134d45f0cbba07a645b90922a61c9c3cca1.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "amplify-bikertown-hp-sandbox-3a49fa8bba.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "amplify-bikertown-hp-sandbox-3a49fa8bba.assets"
+      ],
+      "metadata": {
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "amplify:deployment-type",
+                "Value": "sandbox"
+              },
+              {
+                "Key": "created-by",
+                "Value": "amplify"
+              }
+            ]
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/deploymentType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "deploymentType"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/region": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "region"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifyAuth/UserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPool4BA7F805"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifyAuth/UserPoolAppClient/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPoolAppClient2626C6F8"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifyAuth/IdentityPool": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPool3FDE84CC"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifyAuth/authenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthauthenticatedUserRoleD8DA3689"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifyAuth/unauthenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthunauthenticatedUserRole2B524D9E"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifyAuth/IdentityPoolRoleAttachment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPoolRoleAttachment045F17C8"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifybikertownhpsandbox3a49fa8bbaauthamplifyAuthUserPoolB2790F34Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifybikertownhpsandbox3a49fa8bbaauthamplifyAuthUserPoolB2790F34Ref"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifybikertownhpsandbox3a49fa8bbaauthamplifyAuthUserPoolAppClient1152583ERef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifybikertownhpsandbox3a49fa8bbaauthamplifyAuthUserPoolAppClient1152583ERef"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth/amplifybikertownhpsandbox3a49fa8bbaauthamplifyAuthIdentityPool25D30D2BRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifybikertownhpsandbox3a49fa8bbaauthamplifyAuthIdentityPool25D30D2BRef"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/auth.NestedStack/auth.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "auth179371D7"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/userPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "userPoolId"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/webClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "webClientId"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/identityPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identityPoolId"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/authRegion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "authRegion"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/allowUnauthenticatedIdentities": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "allowUnauthenticatedIdentities"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/signupAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "signupAttributes"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/usernameAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "usernameAttributes"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/verificationMechanisms": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "verificationMechanisms"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/passwordPolicyMinLength": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyMinLength"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/passwordPolicyRequirements": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyRequirements"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/mfaConfiguration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaConfiguration"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/mfaTypes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaTypes"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/socialProviders": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "socialProviders"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/oauthCognitoDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthCognitoDomain"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/oauthScope": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthScope"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/oauthRedirectSignIn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignIn"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/oauthRedirectSignOut": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignOut"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/oauthResponseType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthResponseType"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/oauthClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthClientId"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/groups": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "groups"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/amplify-bikertown-hp-sandbox-3a49fa8bba/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "amplify-bikertown-hp-sandbox-3a49fa8bba"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  },
+  "minimumCliVersion": "2.1005.0"
+}
