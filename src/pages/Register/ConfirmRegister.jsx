@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./ConfirmationCode.css";
 import axios from "axios";
 import { useEffect } from "react";
-import { confirmSignUp } from "@aws-amplify/auth";
+import { confirmSignUp, resendSignUpCode } from "@aws-amplify/auth";
 
 const ConfirmationCode = () => {
   const API_URL = import.meta.env.VITE_BASE_API_URL;
@@ -86,7 +86,9 @@ const ConfirmationCode = () => {
 
   const handleResendCode = async () => {
     try {
-      await axios.post("http://localhost:8000/resend-code");
+      await resendSignUpCode({
+        username: signUpResponse.userId,
+      });
       message.success("Confirmation code resent to your email!");
     } catch (error) {
       message.error("Failed to resend code. Please try again.");

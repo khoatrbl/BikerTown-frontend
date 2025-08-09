@@ -89,8 +89,6 @@ const AppLayout = () => {
     };
   }, [location.pathname, navigate]);
 
-  useEffect(() => {}, [location.pathname]);
-
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };

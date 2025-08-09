@@ -31,10 +31,14 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
 
       try {
         const userData = await getCurrentUser();
+
         const response = await axios.get(
           `${API_URL}/user/${userData.username}`
         );
+
         if (response.status == 200) {
+          console.log("API RES:", response);
+          console.log("user:", user1);
           setUser1(response.data);
         }
       } catch (error) {
@@ -42,17 +46,17 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
         setUser1(null);
       }
     };
+
     fetchUserData();
+    console.log("Rerendered");
   }, [isLoggedIn]);
 
   const handleSignout = async () => {
     setUser1(null);
-    localStorage.removeItem(
-      "CognitoIdentityServiceProvider.49vvifb12b9vn6danpn4su4f2i.LastAuthUser"
-    );
     window.dispatchEvent(new Event("user-logout"));
 
     await signOut();
+    onLogout();
     navigate("/login", { replace: true });
   };
 
