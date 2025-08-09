@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { confirmSignUp } from "@aws-amplify/auth";
 
 const ConfirmationCode = () => {
+  const API_URL = process.env.REACT_APP_BASE_API_URL;
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,7 +56,7 @@ const ConfirmationCode = () => {
           userDataCollection.append("city", userInfo.city);
 
           const response = await axios.post(
-            "http://localhost:8000/register-user-data",
+            `${API_URL}/register-user-data`,
             userDataCollection,
             {
               headers: {

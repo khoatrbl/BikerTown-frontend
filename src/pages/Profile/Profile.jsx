@@ -42,6 +42,7 @@ const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
 const Profile = () => {
+  const API_URL = process.env.REACT_APP_BASE_API_URL;
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
@@ -61,7 +62,7 @@ const Profile = () => {
       const session = await fetchAuthSession();
       const accessToken = session.tokens.accessToken.toString();
 
-      const response = await axios.get("http://localhost:8000/profile", {
+      const response = await axios.get(`${API_URL}/profile`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -141,16 +142,12 @@ const Profile = () => {
       const session = await fetchAuthSession();
       const accessToken = session.tokens.accessToken.toString();
 
-      const response = await axios.post(
-        "http://localhost:8000/update-profile",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Set the correct header
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_URL}/update-profile`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Set the correct header
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Handle the response
       if (response.status === 200) {
