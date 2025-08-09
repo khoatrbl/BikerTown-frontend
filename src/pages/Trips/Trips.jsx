@@ -27,12 +27,14 @@ import "./Trips.css";
 import { Link } from "react-router-dom";
 import { fetchAuthSession } from "aws-amplify/auth";
 import LoadingSpinner from "../../components/Loading/HamsterLoading";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const Trips = () => {
   const API_URL = import.meta.env.VITE_BASE_API_URL;
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [trips, setTrips] = useState([]);
   const [displayTrips, setDisplayTrips] = useState([]);
@@ -58,6 +60,8 @@ const Trips = () => {
       // Fetching the session for the access token for authorization
       const session = await fetchAuthSession();
       const accessToken = session.tokens.accessToken.toString();
+      console.log("Session:", session);
+      console.log("access token:", accessToken);
 
       const response = await axios.get(`${API_URL}/trips`, {
         headers: {

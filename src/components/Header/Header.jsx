@@ -37,8 +37,6 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
         );
 
         if (response.status == 200) {
-          console.log("API RES:", response);
-          console.log("user:", user1);
           setUser1(response.data);
         }
       } catch (error) {
