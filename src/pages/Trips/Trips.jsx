@@ -32,6 +32,7 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const Trips = () => {
+  const API_URL = import.meta.env.VITE_BASE_API_URL;
   const [form] = Form.useForm();
   const [trips, setTrips] = useState([]);
   const [displayTrips, setDisplayTrips] = useState([]);
@@ -58,7 +59,7 @@ const Trips = () => {
       const session = await fetchAuthSession();
       const accessToken = session.tokens.accessToken.toString();
 
-      const response = await axios.get("http://localhost:8000/trips", {
+      const response = await axios.get(`${API_URL}/trips`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -151,7 +152,7 @@ const Trips = () => {
         const accessToken = session.tokens.accessToken.toString();
 
         const response = await axios.patch(
-          `http://localhost:8000/update-trip-name/${tripBeingEdited.trip_id}`,
+          `${API_URL}/update-trip-name/${tripBeingEdited.trip_id}`,
           newTrip.trip_name,
           {
             headers: {
@@ -176,7 +177,7 @@ const Trips = () => {
         const session = await fetchAuthSession();
         const accessToken = session.tokens.accessToken.toString();
         const response = await axios.post(
-          "http://localhost:8000/add-trip",
+          `${API_URL}/add-trip`,
           JSON.stringify(newTrip),
           {
             headers: {
@@ -232,15 +233,12 @@ const Trips = () => {
     const session = await fetchAuthSession();
     const accessToken = session.tokens.accessToken.toString();
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/delete-trip/${trip_id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.delete(`${API_URL}/delete-trip/${trip_id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
     } catch (error) {
       console.error("Error deleting trip:", error);
       message.error("Failed to delete trip.");

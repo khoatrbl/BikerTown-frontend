@@ -18,6 +18,7 @@ import axios from "axios";
 const { Header: AntHeader } = Layout;
 
 const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
+  const API_URL = import.meta.env.VITE_BASE_API_URL;
   const navigate = useNavigate();
   const [user1, setUser1] = useState(null);
 
@@ -31,7 +32,7 @@ const Header = ({ isLoggedIn, onLogout, toggleSidebar, collapsed }) => {
       try {
         const userData = await getCurrentUser();
         const response = await axios.get(
-          `http://localhost:8000/user/${userData.username}`
+          `${API_URL}/user/${userData.username}`
         );
         if (response.status == 200) {
           setUser1(response.data);

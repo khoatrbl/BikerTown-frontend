@@ -7,6 +7,7 @@ import axios from "axios";
 import BikerMap from "../../components/Map/Map";
 
 const TripDetail = () => {
+  const API_URL = import.meta.env.VITE_BASE_API_URL;
   const { trip_id } = useParams();
   const [trip, setTrip] = useState(null);
   const [stops, setStops] = useState([]);
@@ -18,15 +19,12 @@ const TripDetail = () => {
         const session = await fetchAuthSession();
         const accessToken = session.tokens.accessToken.toString();
 
-        const response = await axios.get(
-          `http://localhost:8000/trips/${trip_id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/trips/${trip_id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setTrip(response.data.trip);
         setStops(response.data.stops);
       } catch (error) {

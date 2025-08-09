@@ -39,6 +39,7 @@ const SearchComponent = ({
   endDate,
   tripLocations, // []
 }) => {
+  const API_URL = import.meta.env.VITE_BASE_API_URL;
   const placeIndex = "BikerTownPlaceIndex-SGP";
 
   const [suggestionsToDisplay, setSuggestionsToDisplay] = useState(new Set());
@@ -667,7 +668,7 @@ const SearchComponent = ({
 
     try {
       const response = await axios.patch(
-        `http://localhost:8000/update-trip/${trip_id}`,
+        `${API_URL}/update-trip/${trip_id}`,
         {
           updated_trip: trip_update,
           stops_of_trip: stops_of_trip,
