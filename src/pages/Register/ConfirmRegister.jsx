@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { confirmSignUp } from "@aws-amplify/auth";
 
 const ConfirmationCode = () => {
-  const API_URL = process.env.REACT_APP_BASE_API_URL;
+  const API_URL = import.meta.env.VITE_BASE_API_URL;
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +18,14 @@ const ConfirmationCode = () => {
     if (!location.state?.fromRegister) {
       navigate("/register");
       return null;
+    }
+
+    // Add some debugging
+    console.log("API_URL:", API_URL);
+
+    if (!API_URL) {
+      console.error("REACT_APP_BASE_API_URL is not defined");
+      return;
     }
 
     console.log("Sign Up Response:", signUpResponse);
